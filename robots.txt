@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ontariofurnacerebates.ca/sitemap.xml

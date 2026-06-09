@@ -14,6 +14,15 @@
   <meta property="og:description" content="Licensed HVAC technicians serving Ontario homeowners. Furnace, heat pump and AC repair, installation and rebate guidance." />
   <meta property="og:url" content="https://ontariofurnacerebates.ca/" />
   <meta property="og:image" content="https://ontariofurnacerebates.ca/assets/img/hero.webp" />
+  <meta property="og:image:alt" content="Ontario Furnace Rebates — HVAC services across Ontario" />
+  <meta property="og:site_name" content="Ontario Furnace Rebates" />
+  <meta property="og:locale" content="en_CA" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ontario Furnace Rebates — Furnace, Heat Pump & HVAC Services Across Ontario" />
+  <meta name="twitter:description" content="Licensed HVAC technicians serving Ontario homeowners. Furnace, heat pump and AC repair, installation and rebate guidance." />
+  <meta name="twitter:image" content="https://ontariofurnacerebates.ca/assets/img/hero.webp" />
 
   <!-- Favicon (inline flame, new brand icon) -->
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
@@ -25,6 +34,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/styles.css" />
+  <!-- Ensure content is visible if JavaScript is disabled/blocked (reveal animations default to opacity:0) -->
+  <noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
 
   <!-- Local business structured data (correct brand: Ontario Furnace Rebates) -->
   <script type="application/ld+json">
@@ -51,6 +62,23 @@
       "opens": "00:00",
       "closes": "23:59"
     }
+  }
+  </script>
+
+  <!-- FAQ structured data (mirrors the on-page FAQ section) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "How do I know if my furnace or heating system needs repair?", "acceptedAnswer": { "@type": "Answer", "text": "You'll usually notice uneven heating, odd noises, or rising energy bills. When a furnace starts acting up, it can be a sign the system is losing efficiency — especially in older Ontario homes where equipment has seen heavy use over time." } },
+      { "@type": "Question", "name": "What's the difference between a furnace and a heat pump?", "acceptedAnswer": { "@type": "Answer", "text": "A furnace creates heat directly, while a heat pump moves heat in and out of the home for both heating and cooling. A heat pump can be a strong option during a renovation or upgrade because it often improves energy efficiency and reduces long-term heating costs." } },
+      { "@type": "Question", "name": "Can improving insulation really make a difference in comfort?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Better insulation reduces heat loss through walls and ceilings, improving overall performance. Many homeowners notice better energy efficiency right away, especially when paired with window and door improvements." } },
+      { "@type": "Question", "name": "What is a retrofit and when should I consider one?", "acceptedAnswer": { "@type": "Answer", "text": "A retrofit is when existing systems are upgraded or improved instead of fully rebuilt. This might include furnace replacement, ductwork adjustments, or adding eligible upgrades that improve system performance and reduce energy waste." } },
+      { "@type": "Question", "name": "Are there programs that help with home upgrades or rebates?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Some programs offer rebates for qualifying improvements like insulation, water-heating upgrades, or a heat pump installation. Depending on the work being done, you may also qualify for home renovation savings — we'll help you understand the options." } },
+      { "@type": "Question", "name": "Can a smart thermostat actually help lower energy use?", "acceptedAnswer": { "@type": "Answer", "text": "A smart thermostat manages heating and cooling more efficiently by adjusting temperatures automatically. It supports energy conservation by reducing usage when no one is home, which can lead to steady savings over time." } },
+      { "@type": "Question", "name": "Do renewable options like solar panels make sense for most homes?", "acceptedAnswer": { "@type": "Answer", "text": "In some cases, renewable systems such as solar panels support long-term savings by reducing reliance on the grid. They're often considered alongside other efficiency upgrades that lower greenhouse-gas output and improve overall home performance." } }
+    ]
   }
   </script>
 </head>
@@ -132,7 +160,7 @@
         <div class="quote-card reveal" id="quote">
           <h2>Request a Free Quote</h2>
           <p class="quote-sub">No-obligation estimate. We typically reply within one business day.</p>
-          <form id="quote-form" novalidate data-endpoint="REPLACE_WITH_FORM_ENDPOINT" data-email="contact@ontariofurnacerebates.ca">
+          <form id="quote-form" novalidate data-endpoint="https://auto.sdagents.ai/webhook/hvac-sites" data-email="contact@ontariofurnacerebates.ca">
             <div class="field">
               <label for="name">Full name <span aria-hidden="true">*</span></label>
               <input id="name" name="name" type="text" autocomplete="name" required />

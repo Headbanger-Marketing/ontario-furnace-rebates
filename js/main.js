@@ -126,7 +126,7 @@
     }
 
     var endpoint = form.getAttribute("data-endpoint");
-    // No real endpoint configured yet -> fall back to the visitor's email client.
+    // No real endpoint configured -> fall back to the visitor's email client.
     if (!endpoint || endpoint === "REPLACE_WITH_FORM_ENDPOINT") {
       mailtoFallback();
       return;
@@ -137,13 +137,28 @@
     submitBtn.textContent = "Sending…";
     setStatus("", "");
 
+    var data = new FormData(form);
+    var payload = {
+      name: data.get("name") || "",
+      phone: data.get("phone") || "",
+      email: data.get("email") || "",
+      address: data.get("address") || "",
+      message: data.get("message") || "",
+      page_url: window.location.href,
+      source: "ontariofurnacerebates.ca",
+      submitted_at: new Date().toISOString()
+    };
+
+    // CORS-simple request (text/plain, no-cors) so the lead is delivered even
+    // though the n8n webhook returns no CORS headers. The response is opaque,
+    // so a resolved promise is treated as a successful send.
     fetch(endpoint, {
       method: "POST",
-      headers: { Accept: "application/json" },
-      body: new FormData(form)
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: JSON.stringify(payload)
     })
-      .then(function (res) {
-        if (!res.ok) throw new Error("Request failed");
+      .then(function () {
         form.reset();
         setStatus("Thanks! We’ve received your request and will be in touch shortly.", "ok");
       })
