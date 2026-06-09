@@ -1,0 +1,11 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Local servers / build output (none currently, kept for convenience)
+node_modules/
+dist/
+.cache/
