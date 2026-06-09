@@ -109,7 +109,9 @@
       "Name: " + (data.get("name") || "") + "\n" +
       "Phone: " + (data.get("phone") || "") + "\n" +
       "Email: " + (data.get("email") || "") + "\n" +
-      "Address: " + (data.get("address") || "") + "\n\n" +
+      "Address: " + (data.get("address") || "") + "\n" +
+      "City: " + (data.get("city") || "") + "\n" +
+      "Postal code: " + (data.get("postal") || "") + "\n\n" +
       "Issue:\n" + (data.get("message") || "");
     window.location.href =
       "mailto:" + to +
@@ -138,26 +140,31 @@
     setStatus("", "");
 
     var data = new FormData(form);
-    var payload = {
-      name: data.get("name") || "",
-      phone: data.get("phone") || "",
-      email: data.get("email") || "",
-      address: data.get("address") || "",
-      message: data.get("message") || "",
-      page_url: window.location.href,
-      source: "ontariofurnacerebates.ca",
-      submitted_at: new Date().toISOString()
-    };
 
-    // CORS-simple request (text/plain, no-cors) so the lead is delivered even
-    // though the n8n webhook returns no CORS headers. The response is opaque,
-    // so a resolved promise is treated as a successful send.
-    fetch(endpoint, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain;charset=UTF-8" },
-      body: JSON.stringify(payload)
-    })
+    // Gravity Forms-style entry timestamp (UTC "Y-m-d H:i:s"), matching what
+    // the WordPress Gravity Forms sites send to this same webhook.
+    var now = new Date();
+    function p2(n) { return (n < 10 ? "0" : "") + n; }
+    var dateCreated = now.getUTCFullYear() + "-" + p2(now.getUTCMonth() + 1) + "-" + p2(now.getUTCDate()) +
+      " " + p2(now.getUTCHours()) + ":" + p2(now.getUTCMinutes()) + ":" + p2(now.getUTCSeconds());
+
+    // Map to the exact Gravity Forms field IDs the shared n8n "hvac-sites"
+    // webhook reads ($json.body['1.3'] etc.). Posted as a CORS-simple
+    // urlencoded body so the lead is delivered even though the webhook
+    // returns no CORS headers. The response is opaque (no-cors), so a
+    // resolved promise is treated as a successful send.
+    var params = new URLSearchParams();
+    params.set("1.3", data.get("name") || "");      // Full Name
+    params.set("2", data.get("email") || "");         // Email
+    params.set("3", data.get("message") || "");       // What do you want us to know?
+    params.set("4", data.get("phone") || "");         // Phone
+    params.set("5.1", data.get("address") || "");     // Street Address
+    params.set("5.3", data.get("city") || "");        // City
+    params.set("5.5", data.get("postal") || "");      // Postal Code
+    params.set("source_url", window.location.href);
+    params.set("date_created", dateCreated);
+
+    fetch(endpoint, { method: "POST", mode: "no-cors", body: params })
       .then(function () {
         form.reset();
         setStatus("Thanks! We’ve received your request and will be in touch shortly.", "ok");
