@@ -138,9 +138,6 @@ a:hover { text-decoration: underline; }
 .main-nav a:hover { color: var(--brand-700); text-decoration: none; }
 
 .header-cta { display: none; align-items: center; gap: 1rem; margin-left: auto; }
-.phone-link { display: inline-flex; align-items: center; gap: .45rem; color: var(--ink); font-weight: 700; font-family: var(--font-head); }
-.phone-link:hover { color: var(--heat-700); text-decoration: none; }
-.phone-link svg { color: var(--heat-700); }
 
 /* nav toggle (mobile) */
 .nav-toggle {
@@ -332,9 +329,8 @@ address { font-style: normal; line-height: 1.9; font-size: .92rem; }
 }
 .mobile-bar.show { transform: translateY(0); }
 .mobile-bar a { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 50px; border-radius: 12px; font-family: var(--font-head); font-weight: 700; }
-.mb-call { background: var(--brand-050); color: var(--brand-700); }
 .mb-quote { background: var(--heat-700); color: #fff; }
-.mb-call:hover, .mb-quote:hover { text-decoration: none; }
+.mb-quote:hover { text-decoration: none; }
 
 /* ---------- Reveal animation ---------- */
 .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }

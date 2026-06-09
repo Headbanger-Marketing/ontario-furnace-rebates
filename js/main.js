@@ -170,7 +170,7 @@
         setStatus("Thanks! We’ve received your request and will be in touch shortly.", "ok");
       })
       .catch(function () {
-        setStatus("Something went wrong sending the form. Please call us at (519) 601-7243.", "err");
+        setStatus("Something went wrong sending the form — please email contact@ontariofurnacerebates.ca or try again.", "err");
         mailtoFallback();
       })
       .finally(function () {
