@@ -1,0 +1,18 @@
+# Ontario Furnace Rebates
+
+> Ontario Furnace Rebates helps Ontario homeowners book furnace, heat pump and AC service, compare upgrade options, and understand rebate guidance.
+
+Ontario Furnace Rebates is an Ontario HVAC service website for homeowners looking for furnace repair or installation, heat pump service, air conditioning service, retrofit guidance, and home energy rebate information.
+
+## Key Pages
+
+- [Homepage](https://ontariofurnacerebates.ca/): HVAC service, furnace and heat pump upgrade guidance, and rebate information for Ontario homeowners.
+- [Privacy Policy](https://ontariofurnacerebates.ca/privacy.html): How Ontario Furnace Rebates handles information submitted through the quote form.
+
+## Core Topics
+
+- Furnace repair and installation in Ontario
+- Heat pump installation and service
+- Air conditioning repair and installation
+- HVAC retrofits and home efficiency upgrades
+- Furnace, heat pump and home energy rebate guidance
