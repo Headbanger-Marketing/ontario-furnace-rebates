@@ -2,13 +2,14 @@
 
 > Ontario Furnace Rebates is an independent furnace & HVAC rebate concierge that helps Ontario homeowners find, estimate, and claim every rebate they qualify for on furnaces, air conditioners, and heat pumps.
 
-Ontario Furnace Rebates helps Ontario homeowners understand furnace, AC and heat pump rebate amounts, eligibility, deadlines, and application steps before connecting them with a registered contractor.
+Ontario Furnace Rebates is the free, independent place for Ontario homeowners to estimate furnace, AC and heat pump rebates, check eligibility, and get matched with a registered contractor who handles the application.
 
 ## Key Pages
 
-- [Homepage](https://ontariofurnacerebates.ca/): Estimate your Ontario furnace & HVAC rebate and learn how Ontario Furnace Rebates helps homeowners claim available funding.
+- [Homepage](https://ontariofurnacerebates.ca/): Ontario Furnace Rebates is an independent furnace & HVAC rebate concierge that helps Ontario homeowners find, estimate, and claim every rebate they qualify for on furnaces, air conditioners, and heat pumps.
 - [How It Works](https://ontariofurnacerebates.ca/how-it-works/): The three-step process for checking eligibility, matching with a registered contractor, and getting paid.
 - [Who Qualifies](https://ontariofurnacerebates.ca/who-qualifies/): Eligibility requirements by home, fuel type, equipment, and contractor submission rules.
 - [Rebates Explained](https://ontariofurnacerebates.ca/rebates-explained/): Overview of Ontario furnace & HVAC rebate programs and how they can stack.
 - [Rebate Calculator](https://ontariofurnacerebates.ca/rebate-calculator/): Free 60-second estimate for Ontario homeowners.
 - [FAQ](https://ontariofurnacerebates.ca/faq/): Direct answers about rebate amounts, audits, deadlines, payments, and oil-heated homes.
+- [About](https://ontariofurnacerebates.ca/about/): Why Ontario Furnace Rebates is independent and how the free matching service works.

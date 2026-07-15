@@ -42,9 +42,9 @@ const icon = (name, s = 16, w = 1.9) =>
 /* ---------------------------------------------------------- shared sections */
 function heroHTML(a = {}) {
 	const eyebrow = a.eyebrow || 'Ontario Furnace Rebates';
-	const headline = a.headline || 'See how much you can get back on a furnace or HVAC upgrade in Ontario.';
+	const headline = a.headline || 'Ontario Furnace Rebates: check your furnace & HVAC rebate in 60 seconds.';
 	const subhead = a.subhead ||
-		'Ontario Furnace Rebates is an independent rebate concierge for Ontario homeowners. Most homes qualify for $1,000–$7,500 back on a furnace, AC or heat pump — oil-heated homes can reach $22,000. Your estimate is free with no obligation.';
+		'Ontario Furnace Rebates is an independent furnace and HVAC rebate concierge for Ontario homeowners. Most homes qualify for $1,000–$7,500 back on a furnace, AC or heat pump — oil-heated homes can reach $22,000. Your estimate is free with no obligation.';
 	const heroClass = a.image === false ? 'hero' : 'hero hpro-hero-visual';
 	const trust = [['shield', 'Independent'], ['check', 'Free &amp; no obligation'], ['spark', 'No energy audit required'], ['leaf', 'Ontario homeowners']];
 	const chips = trust.map(([i, t]) => `<span class="chip">${icon(i, 16)} ${t}</span>`).join('');
@@ -259,7 +259,13 @@ function layout(page) {
 	<meta property="og:title" content="${esc(page.title)}" />
 	<meta property="og:description" content="${esc(page.desc || '')}" />
 	<meta property="og:url" content="${canonical}" />
-	<meta name="twitter:card" content="summary" />
+	<meta property="og:image" content="${BASE}/assets/img/hero.webp" />
+	<meta property="og:image:alt" content="Ontario Furnace Rebates — furnace and HVAC rebate help for Ontario homeowners" />
+	<meta property="og:locale" content="en_CA" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="${esc(page.title)}" />
+	<meta name="twitter:description" content="${esc(page.desc || '')}" />
+	<meta name="twitter:image" content="${BASE}/assets/img/hero.webp" />
 	<link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -299,8 +305,8 @@ function addPage(p) { pages.push(p); if (!p.noindex) sitemap.push(BASE + (p.url 
 /* --- Home -------------------------------------------------------------- */
 addPage({
 	url: '/',
-	title: 'Ontario Furnace Rebates — Check Your Rebate in 60 Seconds',
-	desc: 'Ontario Furnace Rebates helps homeowners estimate and claim furnace, AC and heat pump rebates. Most qualify for $1,000–$7,500, oil homes up to ~$22,000.',
+	title: 'Ontario Furnace Rebates | Check Your Rebate Free',
+	desc: 'Ontario Furnace Rebates is an independent furnace & HVAC rebate concierge for Ontario homeowners. Most qualify for $1,000–$7,500 — check free in 60 seconds.',
 	schema: [websiteSchema(), faqPageSchema()],
 	body: expandShortcodes(`
 <section class="hpro-section">[hpro_hero]</section>
@@ -312,15 +318,17 @@ addPage({
 <div class="hpro-tile"><div class="hpro-tile__big">No energy audit</div><div class="hpro-tile__label">required for a heat pump on its own</div></div>
 </div></div></section>
 
-<section class="hpro-section"><div class="hpro-wrap"><h2>How getting your rebate works</h2>
+<section class="hpro-section"><div class="hpro-wrap"><h2>How Ontario Furnace Rebates works</h2>
 <div class="hpro-steps">
 <div class="hpro-stepcard"><div class="hpro-stepcard__num">1</div><h3>Check your rebate.</h3><p>Tell us how your home is heated and where you live — we’ll estimate what you qualify for on a furnace, AC or heat pump.</p></div>
 <div class="hpro-stepcard"><div class="hpro-stepcard__num">2</div><h3>We match you with a registered contractor.</h3><p>They confirm your exact amount and handle the rebate application for you.</p></div>
 <div class="hpro-stepcard"><div class="hpro-stepcard__num">3</div><h3>Get your upgrade — and your rebate.</h3><p>Lower bills, year-round comfort, money back.</p></div>
-</div></div></section>
+</div>
+<p style="margin-top:1.25rem">Want the full walkthrough? See <a href="/how-it-works/">how it works</a>, <a href="/who-qualifies/">who qualifies</a>, or the full <a href="/rebates-explained/">Ontario furnace and HVAC rebates explained</a> guide.</p>
+</div></section>
 
-<section class="hpro-section"><div class="hpro-wrap" style="max-width:760px"><h2>One place for every Ontario furnace &amp; HVAC rebate.</h2>
-<p>Ontario Furnace Rebates is an independent rebate concierge that helps Ontario homeowners estimate, find, and claim every furnace, AC and heat pump rebate they qualify for. Most contractors only point you to one program. We look across the Home Renovation Savings Program, federal oil-conversion funding, and low-interest loans to find every dollar you’re owed, then connect you with a registered contractor who handles the paperwork. You don’t pay us anything.</p>
+<section class="hpro-section"><div class="hpro-wrap" style="max-width:760px"><h2>What is Ontario Furnace Rebates?</h2>
+<p>Ontario Furnace Rebates is an independent furnace and HVAC rebate concierge that helps Ontario homeowners estimate, find, and claim every furnace, AC and heat pump rebate they qualify for. Most contractors only point you to one program. We look across the Home Renovation Savings Program, federal oil-conversion funding, and low-interest loans to find every dollar you’re owed, then connect you with a registered contractor who handles the paperwork. You don’t pay us anything.</p>
 </div></section>
 
 <section class="hpro-section" id="guide"><div class="hpro-wrap" style="max-width:820px">
@@ -338,12 +346,13 @@ addPage({
 <li>The equipment is on the NRCan approved list.</li>
 <li>The application is submitted by an HRS-registered contractor.</li>
 </ul>
+<p>Full checklist: <a href="/who-qualifies/">who qualifies for a furnace and HVAC rebate in Ontario</a>.</p>
 
 <h2>How do you apply (without losing the rebate)?</h2>
 <p>Three steps: check your rebate, get matched with a registered contractor who confirms your amount and handles the application, then install and get paid — usually 60–90 days after install. The one rule that protects your rebate: <strong>don’t start work before your contractor confirms eligibility.</strong></p>
 
 <h2>Which programs can you use?</h2>
-<p>The main one is the <strong>Home Renovation Savings Program (HRS)</strong>. Oil homes can add the federal <strong>Oil to Heat Pump Affordability (OHPA)</strong> program. And the interest-free <strong>Canada Greener Homes Loan</strong> stacks on top to finance the rest.</p>
+<p>The main one is the <strong>Home Renovation Savings Program (HRS)</strong>. Oil homes can add the federal <strong>Oil to Heat Pump Affordability (OHPA)</strong> program. And the interest-free <strong>Canada Greener Homes Loan</strong> stacks on top to finance the rest. See every program on <a href="/rebates-explained/">rebates explained</a>.</p>
 
 <h2>Is there a deadline?</h2>
 <p>The program is confirmed through November 2026 but can close earlier, and contractor registration closes May 31, 2026 — so it’s worth not waiting.</p>
@@ -375,7 +384,7 @@ const std = [
 		body: `
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:820px">
 <h1>How getting your rebate works</h1>
-<p>Three simple steps, no cost to you, no obligation. We handle the confusing part.</p>
+<p><a href="/">Ontario Furnace Rebates</a> handles the confusing part for you — three simple steps, no cost, no obligation.</p>
 
 <div class="hpro-steps">
 <div class="hpro-stepcard"><div class="hpro-stepcard__num">1</div><h3>Check your rebate.</h3><p>Use the 60-second calculator: tell us how your home is heated and where you live, and we’ll estimate what you qualify for across every program — provincial, federal, and municipal.</p></div>
@@ -395,7 +404,7 @@ const std = [
 		body: `
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:900px">
 <h1>Who qualifies for a furnace &amp; HVAC rebate</h1>
-<p>How much you get back depends mostly on how your home is heated today. Find your fuel type below — and if you’re not sure, check anyway.</p>
+<p><a href="/">Ontario Furnace Rebates</a> helps Ontario homeowners check eligibility by fuel type. How much you get back depends mostly on how your home is heated today — if you’re not sure, check anyway.</p>
 
 <div class="hpro-fuelgrid">
 <div class="hpro-fuelcard"><h3>Natural gas</h3><div class="hpro-fuelcard__amt">$1,000–$2,000</div><p>High-efficiency furnace upgrades return the most for gas homes.</p></div>
@@ -426,7 +435,7 @@ const std = [
 		body: expandShortcodes(`
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:680px">
 <h1>Check your rebate</h1>
-<p>Answer a few quick questions and get your estimated Ontario furnace or HVAC rebate in 60 seconds. Free, no obligation.</p>
+<p>Use the free <a href="/">Ontario Furnace Rebates</a> calculator: answer a few quick questions and get your estimated Ontario furnace or HVAC rebate in 60 seconds. Free, no obligation.</p>
 [hpro_calculator]
 <p class="hpro-verified" style="margin-top:1rem">Amounts are estimates and depend on your home and eligibility. Last verified: June 2026.</p>
 </div></section>`)
@@ -438,7 +447,7 @@ const std = [
 		body: expandShortcodes(`
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:680px">
 <h1>Let’s find your rebate</h1>
-<p>The fastest way to your number is the 60-second calculator. Prefer to talk? Use the form below — we serve homeowners across Ontario.</p>
+<p>The fastest way to your number is the free <a href="/">Ontario Furnace Rebates</a> calculator. Prefer to talk? Use the form below — we serve homeowners across Ontario.</p>
 [hpro_calculator]
 <h2 style="margin-top:2rem">Or send us a message</h2>
 [fluentform id="1"]
@@ -451,7 +460,7 @@ const std = [
 		body: `
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:680px;text-align:center">
 <h1>Thanks — your estimate is on its way.</h1>
-<p>A rebate specialist will reach out within one business day to confirm your exact amount and next steps. In the meantime, here’s how the process works.</p>
+<p>A <a href="/">Ontario Furnace Rebates</a> specialist will reach out within one business day to confirm your exact amount and next steps. In the meantime, here’s how the process works.</p>
 <p style="margin-top:1.25rem"><a class="hpro-btn" href="/how-it-works/">See how it works</a></p>
 <div class="hpro-standout" style="margin-top:2rem;text-align:left">💡 <strong>Heat with oil?</strong> Oil homes qualify for the most — the provincial rebate plus federal oil-conversion funding can approach $22,000 combined. Ask your specialist about it.</div>
 </div></section>`
@@ -473,7 +482,7 @@ const std = [
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:900px">
 <p class="hpro-verified">Last updated: June 2026</p>
 <h1>Ontario furnace &amp; HVAC rebates explained</h1>
-<p>There isn’t just one rebate in Ontario — there are several, and they stack. The provincial Home Renovation Savings Program is the main one; oil homes can add federal funding, and an interest-free federal loan covers the rest. Here’s every program, who runs it, and how much it’s worth. Or skip the reading and <a href="/rebate-calculator/">check your rebate in 60 seconds</a>.</p>
+<p><a href="/">Ontario Furnace Rebates</a> maps every program Ontario homeowners can use. There isn’t just one rebate — there are several, and they stack. The provincial Home Renovation Savings Program is the main one; oil homes can add federal funding, and an interest-free federal loan covers the rest. Here’s every program, who runs it, and how much it’s worth. Or skip the reading and <a href="/rebate-calculator/">check your rebate in 60 seconds</a>.</p>
 
 [hpro_rebate_table]
 
@@ -503,7 +512,7 @@ const std = [
 		body: expandShortcodes(`
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:820px">
 <h1>Furnace &amp; HVAC rebate FAQ</h1>
-<p>The questions Ontario homeowners ask most. Still unsure? <a href="/rebate-calculator/">Check your rebate</a> and a specialist will confirm the details.</p>
+<p>Answers from <a href="/">Ontario Furnace Rebates</a> to the questions Ontario homeowners ask most. Still unsure? <a href="/rebate-calculator/">Check your rebate</a> and a specialist will confirm the details.</p>
 [hpro_faq]
 <p style="margin-top:1.5rem">Want the full breakdown by program? See <a href="/rebates-explained/">Rebates Explained</a> or <a href="/who-qualifies/">Who Qualifies</a>.</p>
 </div></section>`)
@@ -515,7 +524,7 @@ const std = [
 		body: `
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:760px">
 <h1>Why Ontario Furnace Rebates</h1>
-<p>We’re an independent rebate concierge for Ontario homeowners. We don’t sell furnaces and we’re not tied to one contractor — so our only job is finding you every dollar you’re owed across every program, then connecting you with a registered contractor who handles the application.</p>
+<p><a href="/">Ontario Furnace Rebates</a> is an independent rebate concierge for Ontario homeowners. We don’t sell furnaces and we’re not tied to one contractor — so our only job is finding you every dollar you’re owed across every program, then connecting you with a registered contractor who handles the application.</p>
 
 <h2>Independent, by design</h2>
 <p>Most "rebate help" comes from a contractor who only points you to the one program their sale qualifies for. Because we’re independent, we look across the Home Renovation Savings Program, federal oil-conversion funding (OHPA), the Canada Greener Homes Loan, and municipal programs — and tell you the real number for your home before anyone tries to sell you anything.</p>
@@ -539,7 +548,7 @@ const std = [
 <h1>Privacy Policy</h1>
 <p><em>Last updated: June 2026. This is a starter policy — have it reviewed before launch.</em></p>
 <h2>Who we are</h2>
-<p>Ontario Furnace Rebates is an independent service that helps Ontario homeowners find and claim furnace, AC and heat pump rebates. We are not affiliated with the Government of Ontario, Save on Energy, Enbridge, or Natural Resources Canada.</p>
+<p><a href="/">Ontario Furnace Rebates</a> is an independent service that helps Ontario homeowners find and claim furnace, AC and heat pump rebates. We are not affiliated with the Government of Ontario, Save on Energy, Enbridge, or Natural Resources Canada.</p>
 <h2>What we collect</h2>
 <p>When you use our rebate calculator or contact form, we collect the details you provide (such as your name, email, phone, postal code, home heating type, and system preference) along with basic technical data (page URL and marketing source/UTM parameters).</p>
 <h2>How we use it</h2>
@@ -562,7 +571,7 @@ const std = [
 <h1>Terms of Use &amp; Rebate Disclaimer</h1>
 <p><em>Last updated: June 2026. This is a starter document — have it reviewed before launch.</em></p>
 <h2>Independent service</h2>
-<p>Ontario Furnace Rebates is an independent service. We are not a government entity and are not affiliated with the Government of Ontario, Save on Energy, Enbridge, or Natural Resources Canada.</p>
+<p><a href="/">Ontario Furnace Rebates</a> is an independent service. We are not a government entity and are not affiliated with the Government of Ontario, Save on Energy, Enbridge, or Natural Resources Canada.</p>
 <h2>Estimates, not guarantees</h2>
 <p>Rebate amounts shown on this site, including calculator results, are estimates. Your actual rebate depends on your home, your equipment, program rules, and eligibility, and is confirmed by the program administrator and your registered contractor. Programs can change or close at any time. Always confirm current figures on the official program site.</p>
 <h2>How applications are handled</h2>
@@ -587,7 +596,7 @@ const SPOKES = [
 		officialUrl: 'https://www.saveonenergy.ca/',
 		excerpt: 'Ontario’s main rebate — furnaces $1,000–$2,000, air-source heat pumps up to $7,500 (more for geothermal). No energy audit required for a heat pump on its own.',
 		content: `
-<p>The Home Renovation Savings Program (HRS) is Ontario’s main furnace & HVAC rebate, delivered by Save on Energy and Enbridge Gas and backed by the Government of Ontario. It replaced the HER+ program.</p>
+<p><a href="/">Ontario Furnace Rebates</a> helps homeowners navigate the Home Renovation Savings Program (HRS) — Ontario’s main furnace and HVAC rebate, delivered by Save on Energy and Enbridge Gas and backed by the Government of Ontario. It replaced the HER+ program.</p>
 <ul>
 <li><strong>High-efficiency gas furnace:</strong> $1,000–$2,000 for qualifying upgrades.</li>
 <li><strong>Air-source heat pump:</strong> up to ~$2,000 (natural gas homes); up to ~$7,500 (electric, oil, propane, wood) at about $1,250/ton.</li>
@@ -603,7 +612,7 @@ const SPOKES = [
 		administrator: 'Natural Resources Canada (federal)', cap: 22000, status: 'active', officialUrl: 'https://natural-resources.canada.ca/',
 		excerpt: 'Federal program for oil-heated homes. Stacks on top of HRS, adding roughly $5,000–$15,000 so combined funding can approach ~$22,000.',
 		content: `
-<p>Oil to Heat Pump Affordability (OHPA) is a federal program for homes that currently heat with oil. It stacks on top of the provincial HRS rebate, adding roughly $5,000–$15,000, so combined funding can approach ~$22,000.</p>
+<p><a href="/">Ontario Furnace Rebates</a> flags oil homes for the Oil to Heat Pump Affordability (OHPA) federal program. It stacks on top of the provincial HRS rebate, adding roughly $5,000–$15,000, so combined funding can approach ~$22,000.</p>
 <p>If you heat with oil, this is the single biggest opportunity — it’s why oil homes get back the most. OHPA stacks on top of the provincial <a href="/rebates/home-renovation-savings-program/">Home Renovation Savings Program</a>. Amounts are estimates — confirm current figures and eligibility on the official program site. Last verified: June 2026.</p>`
 	},
 	{
@@ -611,7 +620,7 @@ const SPOKES = [
 		administrator: 'Enbridge Gas', maxAmount: 1000, status: 'active', officialUrl: 'https://enbridgegas.com/',
 		excerpt: 'For Enbridge gas customers upgrading to a high-efficiency furnace, plus insulation and smart-thermostat top-ups. Up to $1,000.',
 		content: `
-<p>The Enbridge Home Efficiency Rebate is for Enbridge gas customers making efficiency upgrades. A high-efficiency natural gas furnace replacement typically qualifies for up to $1,000, and you can add top-ups for attic insulation, air sealing, and a smart thermostat.</p>
+<p><a href="/">Ontario Furnace Rebates</a> checks Enbridge gas customers for the Enbridge Home Efficiency Rebate. A high-efficiency natural gas furnace replacement typically qualifies for up to $1,000, and you can add top-ups for attic insulation, air sealing, and a smart thermostat.</p>
 <p>If you heat with oil or propane, you’ll usually get more from the provincial <a href="/rebates/home-renovation-savings-program/">Home Renovation Savings Program</a> heat pump rebate. If you heat with gas, the Enbridge rebate is often the fastest path. Amounts are estimates — confirm current figures and eligibility on the official program site. Last verified: June 2026.</p>`
 	},
 	{
@@ -620,7 +629,7 @@ const SPOKES = [
 		officialUrl: 'https://natural-resources.canada.ca/energy-efficiency/homes/canada-greener-homes-initiative',
 		excerpt: 'Interest-free federal loan up to $40,000 over 10 years. The grant closed in 2024; the loan did not, and it stacks with provincial rebates.',
 		content: `
-<p>The Canada Greener Homes Loan is an interest-free federal loan of up to $40,000 over a 10-year term. The Greener Homes <em>grant</em> closed in 2024, but the <em>loan</em> is still active and stacks with provincial rebates — useful for financing the part of a furnace, AC or heat pump install the rebates don’t cover.</p>
+<p><a href="/">Ontario Furnace Rebates</a> also looks at the Canada Greener Homes Loan — an interest-free federal loan of up to $40,000 over a 10-year term. The Greener Homes <em>grant</em> closed in 2024, but the <em>loan</em> is still active and stacks with provincial rebates — useful for financing the part of a furnace, AC or heat pump install the rebates don’t cover.</p>
 <p>Amounts and terms are estimates — confirm current details on the official program site. Last verified: June 2026.</p>`
 	},
 	{
@@ -628,7 +637,7 @@ const SPOKES = [
 		status: 'active',
 		excerpt: 'Some cities and utilities add their own low-interest loans or top-ups, like Toronto’s BetterHomesTO HELP. We check these for your address.',
 		content: `
-<p>On top of provincial and federal programs, some Ontario cities and utilities offer their own low-interest loans or top-ups — for example, Toronto’s BetterHomesTO Home Energy Loan Program (HELP). Availability depends on where you live.</p>
+<p><a href="/">Ontario Furnace Rebates</a> checks municipal and utility top-ups too. On top of provincial and federal programs, some Ontario cities and utilities offer their own low-interest loans or top-ups — for example, Toronto’s BetterHomesTO Home Energy Loan Program (HELP). Availability depends on where you live.</p>
 <p>When you check your rebate, we look at the municipal and utility options for your specific address too. Last verified: June 2026.</p>`
 	}
 ];
@@ -684,8 +693,8 @@ const CITIES = [
 ];
 for (const c of CITIES) {
 	const url = `/${c.slug}/`;
-	const intro = `${c.city} homeowners qualify for the same Ontario furnace & HVAC rebates as the rest of the province — $1,000–$7,500 for most homes, and up to ~$22,000 for oil-heated homes. Check what you can get back in 60 seconds.`;
-	const excerpt = `Furnace & HVAC rebates for ${c.city}, Ontario homeowners — $1,000–$7,500 for most homes, up to ~$22,000 for oil. Check yours in 60 seconds.`;
+	const intro = `Ontario Furnace Rebates helps ${c.city} homeowners check the same Ontario furnace and HVAC rebates as the rest of the province — $1,000–$7,500 for most homes, and up to ~$22,000 for oil-heated homes. Check what you can get back in 60 seconds.`;
+	const excerpt = `Furnace & HVAC rebates for ${c.city}, Ontario homeowners — $1,000–$7,500 for most homes, up to ~$22,000 for oil. Check yours with Ontario Furnace Rebates.`;
 	let local = '';
 	if (c.utility || c.muni) {
 		local = `<h2>Local programs in ${esc(c.city)}</h2>\n<div class="hpro-fuelgrid">`;
@@ -711,7 +720,7 @@ for (const c of CITIES) {
 
 ${local}
 
-<div class="hpro-content"><p>Furnace & HVAC rebates available to ${esc(c.city)} homeowners come from the same provincial and federal programs as the rest of Ontario. Use the calculator above for your exact number, or read the breakdown below.</p></div>
+<div class="hpro-content"><p><a href="/">Ontario Furnace Rebates</a> covers the same provincial and federal programs for ${esc(c.city)} homeowners as the rest of Ontario. Use the calculator above for your exact number, or read the breakdown below.</p></div>
 
 <h2>Which programs can ${esc(c.city)} homeowners use?</h2>
 <p>The provincial <a href="/rebates/home-renovation-savings-program/">Home Renovation Savings Program</a> is the main one. Oil-heated homes can add the federal <a href="/rebates/oil-to-heat-pump-affordability/">Oil to Heat Pump Affordability</a> program, and the interest-free <a href="/rebates/canada-greener-homes-loan/">Canada Greener Homes Loan</a> stacks on top. See <a href="/who-qualifies/">who qualifies</a> for the full checklist.</p>
@@ -733,7 +742,7 @@ const POSTS = [
 		date: '2026-06-06', dateLabel: 'June 6, 2026', category: 'Program Updates',
 		excerpt: 'The Home Renovation Savings Program is confirmed through November 2026 but can close earlier, and contractor registration closes May 31, 2026.',
 		content: `
-<p>The Home Renovation Savings Program (HRS) remains Ontario’s main furnace & HVAC rebate in 2026, worth up to $7,500 for most homes and up to $12,000 for geothermal. A few timing notes matter right now:</p>
+<p><a href="/">Ontario Furnace Rebates</a> is tracking the 2026 HRS deadlines closely. The Home Renovation Savings Program remains Ontario’s main furnace and HVAC rebate in 2026, worth up to $7,500 for most homes and up to $12,000 for geothermal. A few timing notes matter right now:</p>
 <ul>
 <li><strong>Confirmed through November 2026</strong> — but the program terms allow it to close earlier at any time.</li>
 <li><strong>Contractor registration closes May 31, 2026</strong> — you need a registered contractor to submit your application.</li>
@@ -756,7 +765,7 @@ addPage({
 	body: `
 <section class="hpro-section"><div class="hpro-wrap" style="max-width:1000px">
 <h1>Blog</h1>
-<p>Program updates, deadlines, and how-to guides for Ontario furnace & HVAC rebates.</p>
+<p>Program updates, deadlines, and how-to guides from <a href="/">Ontario Furnace Rebates</a> for Ontario furnace and HVAC rebates.</p>
 <div class="hpro-postgrid">
 ${cards}
 </div>
@@ -817,16 +826,17 @@ writeFileSync(DOCS + '/llms.txt', `# ${BRAND}
 
 > ${ENTITY_DESCRIPTION}
 
-${BRAND} helps Ontario homeowners understand furnace, AC and heat pump rebate amounts, eligibility, deadlines, and application steps before connecting them with a registered contractor.
+${BRAND} is the free, independent place for Ontario homeowners to estimate furnace, AC and heat pump rebates, check eligibility, and get matched with a registered contractor who handles the application.
 
 ## Key Pages
 
-- [Homepage](${BASE}/): Estimate your Ontario furnace & HVAC rebate and learn how ${BRAND} helps homeowners claim available funding.
+- [Homepage](${BASE}/): ${ENTITY_DESCRIPTION}
 - [How It Works](${BASE}/how-it-works/): The three-step process for checking eligibility, matching with a registered contractor, and getting paid.
 - [Who Qualifies](${BASE}/who-qualifies/): Eligibility requirements by home, fuel type, equipment, and contractor submission rules.
 - [Rebates Explained](${BASE}/rebates-explained/): Overview of Ontario furnace & HVAC rebate programs and how they can stack.
 - [Rebate Calculator](${BASE}/rebate-calculator/): Free 60-second estimate for Ontario homeowners.
 - [FAQ](${BASE}/faq/): Direct answers about rebate amounts, audits, deadlines, payments, and oil-heated homes.
+- [About](${BASE}/about/): Why ${BRAND} is independent and how the free matching service works.
 `);
 // CNAME (GitHub Pages custom domain) + Jekyll opt-out
 writeFileSync(DOCS + '/CNAME', 'ontariofurnacerebates.ca\n');
