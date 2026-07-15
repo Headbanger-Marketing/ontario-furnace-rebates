@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 80" fill="none">
+  <rect x="0" y="0" width="80" height="80" rx="15" fill="#1e3e4a"/>
+  <path d="M40 12c1.1 7.6-5.6 10.4-5.6 17.2A5.6 5.6 0 0040 35a5.6 5.6 0 005.6-5.5c0-2.2-.9-4-2-5.5C49.5 25 53.5 30.6 53.5 37a13 13 0 11-27 0c0-9.8 10-14.2 13.5-25z" fill="#f08a4b"/>
+  <text x="94" y="32" font-family="Figtree, sans-serif" font-size="26" font-weight="800" letter-spacing="-0.5" fill="#1e3e4a">Furnace</text>
+  <text x="94" y="56" font-family="Figtree, sans-serif" font-size="26" font-weight="800" letter-spacing="-0.5" fill="#1e3e4a">Rebates</text>
+</svg>

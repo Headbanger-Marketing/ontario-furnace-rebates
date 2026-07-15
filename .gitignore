@@ -4,8 +4,11 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+Icon
 
 # Local servers / build output (none currently, kept for convenience)
 node_modules/
 dist/
 .cache/
+
+
