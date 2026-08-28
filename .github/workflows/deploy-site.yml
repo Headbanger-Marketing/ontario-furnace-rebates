@@ -1,0 +1,54 @@
+name: Deploy site
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "tools/**"
+      - "assets/**"
+      - "style.css"
+      - "inc/**"
+      - "header.php"
+      - "footer.php"
+      - "import/**"
+
+concurrency:
+  group: deploy-site-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - run: node tools/build.mjs
+
+      - name: Commit docs if changed
+        env:
+          PAGES_DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$PAGES_DEPLOY_TOKEN" ]; then
+            echo "Missing repo secret PAGES_DEPLOY_TOKEN." >&2
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "docs CLEAN"
+            exit 0
+          fi
+          git commit -m "deploy: rebuild docs (github actions)"
+          git push "https://x-access-token:${PAGES_DEPLOY_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
