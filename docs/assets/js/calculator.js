@@ -1,20 +1,6 @@
-/**
- * Heat Pump Rebate Ontario — rebate calculator (vanilla JS, no deps).
- *
- * UI/UX ported from the Claude Design handoff (app.jsx + styles.css):
- * calculator-forward card → 4-step icon-card flow (Step x/4 + "Secure" lock,
- * gradient progress) → ~1.7s calculating ring with a checklist → odometer
- * count-up reveal (oil $22k standout) → trust-framed lead form → success.
- *
- * Static-site build: dollar figures come from HPRO_CALC.rules (set in
- * assets/js/hpro-config.js — never hardcoded), and the lead POSTs DIRECTLY to
- * the n8n webhook (HPRO_CALC.leadUrl) as a CORS-simple, Gravity Forms-style
- * urlencoded request (mode:no-cors) so it is delivered even when the webhook returns no CORS
- * headers — the trade-off is we can't read its response, so a completed send is
- * treated as success. dataLayer pushes are kept but inert unless a tag manager
- * is added later.
- *
- * Mount: <div data-hpro-calc></div> (hydrates every instance).
+/** Heat pump program-cap checker and inquiry form.
+ * Numeric caps come from hpro-config.js. Qualifying capacity and eligibility
+ * require review. Inquiry success requires an accepted HTTP CORS response.
  */
 (function () {
 	'use strict';
@@ -53,28 +39,29 @@
 	/* ---------------------------------------------------------------- data */
 	var HEAT = [
 		{ id: 'natural-gas', label: 'Natural gas', sub: 'Furnace / boiler', icon: 'flame' },
-		{ id: 'electric', label: 'Electric', sub: 'Baseboard / forced air', icon: 'bolt' },
-		{ id: 'oil', label: 'Oil', sub: 'Often biggest rebate', icon: 'droplet' },
+		{ id: 'electric', label: 'Electric resistance', sub: 'Baseboard / electric furnace', icon: 'bolt' },
+		{ id: 'oil', label: 'Oil', sub: 'Check Ontario support', icon: 'droplet' },
 		{ id: 'propane', label: 'Propane', sub: 'Tank / boiler', icon: 'flameSmall' },
 		{ id: 'wood', label: 'Wood', sub: 'Stove / fireplace', icon: 'log' },
 		{ id: 'not-sure', label: 'Not sure', sub: "We'll help you check", icon: 'help' }
 	];
 	var OWN = [
-		{ id: 'yes', label: 'Yes, I own my home', sub: 'Owners qualify for rebates', icon: 'homeOwn' },
+		{ id: 'yes', label: 'Yes, I own my home', sub: 'Ownership is one eligibility condition', icon: 'homeOwn' },
 		{ id: 'no', label: 'No, I rent', sub: "We'll point you the right way", icon: 'rent' }
 	];
 	var SYS = [
-		{ id: 'air-source', label: 'Air-source heat pump', sub: 'Most common — wall or ducted', icon: 'air' },
-		{ id: 'geothermal', label: 'Geothermal', sub: 'Ground-source — highest rebate', icon: 'geo' },
+		{ id: 'air-source', label: 'Air-source heat pump', sub: 'Most common , wall or ducted', icon: 'air' },
+		{ id: 'geothermal', label: 'Geothermal', sub: 'Ground-source , highest rebate', icon: 'geo' },
 		{ id: 'help', label: 'Not sure yet', sub: "We'll recommend the best fit", icon: 'help' }
 	];
 	var TRUST = [
 		{ icon: 'shield', t: 'Independent' },
 		{ icon: 'check', t: 'Free & no obligation' },
-		{ icon: 'spark', t: 'No energy audit required' },
+		{ icon: 'spark', t: 'HRS heat pump guidance' },
 		{ icon: 'leaf', t: 'Ontario homeowners' }
 	];
 
+	function ontarioPostal(value) { return /^[KLMNP][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$/.test(String(value || '').trim().toUpperCase()); }
 	function fmt(n) { return '$' + Math.round(n).toLocaleString('en-CA'); }
 	function nums(text) {
 		var m = String(text || '').replace(/,/g, '').match(/\d{3,6}/g) || [];
@@ -91,18 +78,13 @@
 
 	/* result numbers from ACF rule text */
 	function result(ans) {
-		var rule = RULES[ans.heat] || RULES['not-sure'] || {};
-		var geo = ans.system === 'geothermal';
-		var text = geo ? (rule.geoText || rule.airText || '') : (rule.airText || '');
-		var n = nums(text);
-		var low = n.length ? Math.min.apply(null, n) : 2000;
-		var high = n.length ? Math.max.apply(null, n) : 7500;
-		var oil = ans.heat === 'oil';
-		var oilN = nums(rule.oilBonusText);
-		var oilHigh = oilN.length ? Math.max.apply(null, oilN) : 22000;
-		return { low: low, high: high, oil: oil, geo: geo, oilHigh: oilHigh,
-			label: (rule.label || 'your'), priority: rule.priority || 'standard' };
-	}
+  var rule = RULES[ans.heat] || RULES['not-sure'] || {};
+  var geo = ans.system === 'geothermal';
+  var known = ans.own === 'yes' && ans.heat !== 'not-sure' && ans.system !== 'help' && ontarioPostal(ans.postal);
+  var high = known ? Number(geo ? rule.geoMax : rule.airMax) || 0 : 0;
+  return { low: 0, high: high, oil: false, geo: geo, oilHigh: 0,
+   qualified: known, label: rule.label || 'unknown', priority: rule.priority || 'standard' };
+ }
 
 	/* ============================================================== widget */
 	function Calc(root) {
@@ -129,24 +111,24 @@
 
 		if (s === 0) {
 			body = '<div class="q fade-enter"><h2>How is your home heated now?</h2>' +
-				'<p class="qhint">This sets which rebate programs you qualify for.</p>' +
+				'<p class="qhint">Your current primary heating fuel sets the published incentive category.</p>' +
 				'<div class="opts cols-3">' + HEAT.map(function (o) { return this.optHTML(o, HEAT, true, 'heat'); }, this).join('') + '</div></div>';
 		} else if (s === 1) {
 			body = '<div class="q fade-enter"><h2>Do you own your home?</h2>' +
-				'<p class="qhint">Rebates are paid to the homeowner.</p>' +
+				'<p class="qhint">Ownership and the equipment purchase or rental terms need confirmation.</p>' +
 				'<div class="opts">' + OWN.map(function (o) { return this.optHTML(o, OWN, false, 'own'); }, this).join('') + '</div></div>';
 		} else if (s === 2) {
 			body = '<div class="q fade-enter"><h2>What\'s your postal code?</h2>' +
-				'<p class="qhint">We match you to programs in your area. We won\'t mail you anything.</p>' +
+				'<p class="qhint">Enter the Ontario property postal code (starting K, L, M, N or P). It confirms the province for this cap checker; it does not select local programs.</p>' +
 				'<input class="field" id="hpro-postal" inputmode="text" maxlength="7" placeholder="A1A 1A1" autocomplete="postal-code" value="' + this.ans.postal + '"></div>';
 		} else if (s === 3) {
 			body = '<div class="q fade-enter"><h2>Air-source or geothermal?</h2>' +
-				'<p class="qhint">Not sure? Pick "Not sure yet" — most homes go air-source.</p>' +
+				'<p class="qhint">Not sure? Pick "Not sure yet" , most homes go air-source.</p>' +
 				'<div class="opts">' + SYS.map(function (o) { return this.optHTML(o, SYS, false, 'system'); }, this).join('') + '</div></div>';
 		}
 
 		var contBtn = (s === 2)
-			? '<button type="button" class="btn" id="hpro-cont"' + (this.ans.postal.replace(/\s/g, '').length < 6 ? ' disabled' : '') + '>Continue ' + I.arrow(17) + '</button>'
+			? '<button type="button" class="btn" id="hpro-cont"' + (!ontarioPostal(this.ans.postal) ? ' disabled' : '') + '>Continue ' + I.arrow(17) + '</button>'
 			: '';
 
 		this.root.innerHTML =
@@ -156,7 +138,7 @@
 				'<div class="bar"><i style="width:' + prog + '%"></i></div>' +
 				'<div class="swap">' + body + '</div>' +
 				'<div class="navrow"><button type="button" class="back"' + (s === 0 ? ' disabled' : '') + '>' + I.arrowL(15) + ' Back</button>' + contBtn + '</div>' +
-				'<div class="under-card">' + I.clock(13) + ' Program confirmed through Nov 2026 — can close sooner.</div>' +
+				'<div class="under-card">' + I.clock(13) + ' Confirm current program terms before ordering equipment.</div>' +
 			'</div>';
 
 		this.bindQuestion();
@@ -189,11 +171,11 @@
 			var sync = function () {
 				self.ans.postal = input.value.toUpperCase().replace(/[^A-Z0-9 ]/g, '').slice(0, 7);
 				input.value = self.ans.postal;
-				if (cont) cont.disabled = self.ans.postal.replace(/\s/g, '').length < 6;
+				if (cont) cont.disabled = !ontarioPostal(self.ans.postal);
 			};
 			input.addEventListener('input', sync);
-			input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && self.ans.postal.replace(/\s/g, '').length >= 6) self.go(3); });
-			if (cont) cont.addEventListener('click', function () { if (self.ans.postal.replace(/\s/g, '').length >= 6) self.go(3); });
+			input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && ontarioPostal(self.ans.postal)) self.go(3); });
+			if (cont) cont.addEventListener('click', function () { if (ontarioPostal(self.ans.postal)) self.go(3); });
 			setTimeout(function () { input.focus(); }, 60);
 		}
 
@@ -206,8 +188,9 @@
 	/* ---- calculating ---- */
 	Calc.prototype.toCalc = function () {
 		var self = this;
+		if (!ontarioPostal(this.ans.postal)) { this.go(2); return; }
 		this.phase = 'calc';
-		var lines = ['Checking Ontario programs', 'Matching your home type', 'Calculating your range'];
+		var lines = ['Reviewing your answers', 'Selecting the heating category', 'Showing the published cap'];
 		var C = 2 * Math.PI * 34;
 		this.root.innerHTML =
 			'<div class="card"><div class="calc">' +
@@ -216,7 +199,7 @@
 					'<circle id="hpro-ringfg" cx="42" cy="42" r="34" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '" style="transition:stroke-dashoffset .48s ease"/>' +
 				'</svg><div class="t">' + I.spark(26) + '</div></div>' +
 				'<div class="lab">Calculating your estimate…</div>' +
-				'<div class="sub">Checking every program you qualify for.</div>' +
+				'<div class="sub">Organizing the details you provided.</div>' +
 				'<div class="steps">' + lines.map(function (l, i) {
 					return '<div class="ln" data-i="' + i + '"><span class="tick">' + I.clock(15) + '</span>' + l + '</div>';
 				}).join('') + '</div>' +
@@ -268,14 +251,14 @@
 			'<div class="reveal">' +
 				'<div class="result-card">' +
 					'<span class="r-eyebrow"><span class="pulse"></span> Estimate ready' + postalTxt + '</span>' +
-					'<div class="r-label">Your estimated furnace &amp; HVAC rebate</div>' +
-					'<div class="r-amount"><span id="hpro-lo">$0</span><span style="opacity:.55;margin:0 .06em">–</span><span id="hpro-hi">$0</span></div>' +
-					'<p class="r-reassure">Based on a <b>' + r.label.toLowerCase() + '</b>-heated' + geoTxt + ' home in Ontario. A rebate specialist will confirm your <b>exact</b> amount — free, no obligation.</p>' +
+					'<div class="r-label">Published purchased heat pump cap</div>' +
+					'<div class="r-amount">' + (r.qualified ? 'Up to <span id="hpro-hi">$0</span>' : 'Eligibility review required') + '</div>' +
+					'<p class="r-reassure">Based on a <b>' + r.label.toLowerCase() + '</b>-heated' + geoTxt + ' home in Ontario. This cap assumes no existing heat pump used for space heating; replacement of one is excluded. Qualifying capacity and all other conditions require contractor review. This is a cap, not approval.</p>' +
 					standout +
 				'</div>' +
 				'<form class="lead" novalidate>' +
-					'<h3>Get your exact rebate amount</h3>' +
-					'<p class="sub">Enter your details and we\'ll confirm your precise figure and next steps — by phone, when it suits you.</p>' +
+					'<h3>Request a project review</h3>' +
+					'<p class="sub">Share your project details for follow-up. A participating contractor must confirm eligibility.</p>' +
 					'<div class="form">' +
 						'<label class="flbl"><span>First name</span><input class="field lc" name="name" placeholder="Jordan" autocomplete="given-name"></label>' +
 						'<div class="row2">' +
@@ -283,17 +266,17 @@
 							'<label class="flbl"><span>Phone</span><input class="field lc" name="phone" type="tel" placeholder="(416) 555-0123" autocomplete="tel"></label>' +
 						'</div>' +
 						'<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>' +
-						'<button class="btn big full" type="submit" disabled>Get My Exact Rebate ' + I.arrow(18) + '</button>' +
+						'<button class="btn big full" type="submit" disabled>Request Review ' + I.arrow(18) + '</button>' +
 					'</div>' +
-					'<div class="reassure-row"><span class="r">' + I.check(14) + ' Free</span><span class="r">' + I.shield(14) + ' No obligation</span><span class="r">' + I.noSell(14) + ' We never sell your info</span></div>' +
+					'<div class="reassure-row"><span class="r">' + I.check(14) + ' Free</span><span class="r">' + I.shield(14) + ' No obligation</span><span class="r">' + I.noSell(14) + ' Provider follow-up</span></div>' +
 					'<p class="err" hidden></p>' +
-					'<p class="consent">By submitting, you agree to be contacted about your rebate estimate. Program confirmed through Nov 2026 and may close sooner. <a href="/privacy-policy/">Privacy</a>.</p>' +
+					'<p class="consent">By submitting, you agree to be contacted about your rebate estimate. Your inquiry may be shared with a relevant provider. Program approval is separate. <a href="/privacy-policy/">Privacy</a>.</p>' +
 				'</form>' +
 				'<div style="text-align:center"><button type="button" class="restart">' + I.arrowL(14) + ' Start over</button></div>' +
 			'</div>';
 
-		countUp(this.root.querySelector('#hpro-lo'), r.low, 1050, fmt);
-		countUp(this.root.querySelector('#hpro-hi'), r.high, 1250, fmt);
+
+		if (r.qualified) countUp(this.root.querySelector('#hpro-hi'), r.high, 1250, fmt);
 		if (r.oil) countUp(this.root.querySelector('#hpro-oil'), r.oilHigh, 1500, fmt);
 
 		this.bindLead(r);
@@ -318,7 +301,7 @@
 			if (!valid()) return;
 			err.hidden = true; btn.disabled = true; btn.textContent = 'Sending…';
 
-			// Honeypot — real users never fill this; silently "succeed" and drop.
+			// Honeypot , real users never fill this; silently "succeed" and drop.
 			if (form.querySelector('[name=company_website]').value) { self.done(fields.name.value.trim()); return; }
 
 			var name = fields.name.value.trim();
@@ -327,7 +310,7 @@
 				'Fuel type: ' + labelOf(HEAT, self.ans.heat),
 				'Owns home: ' + labelOf(OWN, self.ans.own),
 				'System interest: ' + labelOf(SYS, self.ans.system),
-				'Estimated rebate: ' + fmt(r.low) + '–' + fmt(r.high),
+				'Purchased heat pump cap: ' + (r.qualified ? fmt(r.high) : 'Eligibility review required'),
 				'Lead priority: ' + r.priority
 			];
 			var u = utms(), camp = [];
@@ -338,8 +321,7 @@
 			// these exact field-ID keys (1.3 name, 2 email, 3 message, 4 phone,
 			// 5.1/5.3/5.5 address, source_url, date_created). The calculator's extra
 			// context is folded into the message (3) because the webhook ignores other
-			// keys. CORS-simple urlencoded request (no preflight, no-cors) so it lands
-			// without server-side CORS config; opaque response = a completed send is success.
+			// keys. A CORS response must confirm HTTP success before the UI shows receipt.
 			var params = new URLSearchParams();
 			params.set('1.3', name);
 			params.set('2', fields.email.value.trim());
@@ -351,12 +333,13 @@
 			params.set('source_url', location.href);
 			params.set('date_created', gfDate());
 
-			fetch(CFG.leadUrl, { method: 'POST', mode: 'no-cors', body: params }).then(function () {
+			fetch(CFG.leadUrl, { method: 'POST', mode: 'cors', body: params }).then(function (response) {
+            if (!response.ok) throw new Error('The inquiry was not accepted.');
 				dl('lead_submit', { lead_priority: r.priority, fuel_type: self.ans.heat, system_type: self.ans.system });
 				self.done(name);
 			}).catch(function () {
-				btn.disabled = false; btn.innerHTML = 'Get My Exact Rebate ' + I.arrow(18);
-				err.textContent = 'Something went wrong — please try again in a moment.';
+				btn.disabled = false; btn.innerHTML = 'Request Review ' + I.arrow(18);
+				err.textContent = 'Something went wrong , please try again in a moment.';
 				err.hidden = false;
 			});
 		});
@@ -368,7 +351,7 @@
 			'<div class="reveal"><div class="result-card done-card">' +
 				'<div class="big-ic">' + I.check(34, 2.4) + '</div>' +
 				'<h3>You\'re all set' + (first ? ', ' + first : '') + '.</h3>' +
-				'<p>A rebate specialist will call you within one business day to confirm your exact amount and the simple next steps. No obligation — and we never sell your info.</p>' +
+				'<p>Your inquiry was received for review and provider follow-up. It is not a program application or funding approval.</p>' +
 				'<button type="button" class="restart">' + I.arrowL(14) + ' Start over</button>' +
 			'</div></div>';
 		var self = this;

@@ -1,0 +1,13 @@
+# Program sources checked October 4, 2026
+
+The generated guides link to primary program pages. Do not restore the former June seed or reuse its furnace-only, cash-stacking, deadline or loan claims.
+
+- [Home Renovation Savings heat pumps](https://www.homerenovationsavings.ca/without-assessment/heat-pumps): purchased air source, $500/ton up to $2,000 for Enbridge natural gas; $1,250/ton up to $7,500 for electricity/oil/propane/wood on the Ontario grid. Ground source is $3,000 for natural gas or $2,000/ton up to $12,000 for the non-gas category. Rentals have separate caps. Homeownership, home type, product eligibility and mandatory pre-installation approval also apply. Payment guidance is 60 days after post-installation approval.
+- [HRS terms and requirements](https://www.homerenovationsavings.ca/terms-and-conditions): the heat pump requirements distinguish the rebated heat pump from compatible backup heating. A standalone gas furnace or cooling-only AC is not a heat pump rebate measure.
+- [NRCan participating provinces](https://natural-resources.canada.ca/energy-efficiency/home-energy-efficiency/canada-greener-homes-initiative/applicants-participating-provinces-territories): Ontario uses IESO co-delivery, with a direct-install project valued up to $25,000; that value is not cash paid to an applicant. The federal portal July 31, 2026 closure must not be applied to Ontario without the provincial exception.
+- [Save on Energy affordability support](https://saveonenergy.ca/en/For-Your-Home/Energy-Affordability-Program): income-qualified Ontario support, official intake and delivery agents. Private purchases should not be promised reimbursement under a direct-install route.
+- [NRCan grant process](https://natural-resources.canada.ca/energy-efficiency/home-energy-efficiency/canada-greener-homes-initiative/grant-process-works): new Canada Greener Homes Loan applications closed October 1, 2025.
+
+Edit `tools/content.mjs` for editorial pages and `docs/assets/js/hpro-config.js` for numeric caps, then rebuild with `node tools/build.mjs`. The calculator provides a purchased-system cap only; unknown source/system or renter status requires review. Preserve official-source links and the pre-approval rule when updating.
+
+The HRS heat pump stream requirements PDF, sections 2 and 3.2(d), specifies total rated air-source heating capacity at 8.3C (47F), closed-loop ground-source heating capacity or open-loop heating capacity for open-loop-only equipment, and excludes replacement of an existing heat pump used for space heating. The checker labels the electric category as electric resistance.

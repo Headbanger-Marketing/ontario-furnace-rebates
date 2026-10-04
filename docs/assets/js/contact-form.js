@@ -1,10 +1,6 @@
-/**
- * Contact form handler (static).
- *
- * Replaces the WordPress Fluent Form on /contact/. Posts the same lead shape as
- * the calculator directly to the n8n webhook (window.HPRO_CALC.leadUrl), then
- * sends the visitor to /thank-you/. CORS-simple request so it lands without
- * server-side CORS config.
+/** Contact inquiry handler. Preserve the shared Gravity Forms field mapping.
+ * An accepted HTTP CORS response is required before redirecting to receipt.
+ * HTTP or network failure leaves entered fields in place for a retry.
  */
 (function () {
 	'use strict';
@@ -44,12 +40,11 @@
 		var msg = f.message.value.trim();
 		var u = utms(), camp = [];
 		['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) { if (u[k]) camp.push(k + '=' + u[k]); });
-		if (camp.length) msg += '\n\n— Campaign: ' + camp.join(' ');
+		if (camp.length) msg += '\n\n, Campaign: ' + camp.join(' ');
 
 		// Gravity Forms-style body: the shared n8n "hvac-sites" webhook reads these
 		// exact field-ID keys (1.3 name, 2 email, 3 message, 4 phone, source_url,
-		// date_created). Contact form has no address, so 5.x stay blank. CORS-simple
-		// urlencoded request so it lands without server-side CORS config.
+		// date_created). Contact form has no address, so 5.x stay blank.
 		var params = new URLSearchParams();
 		params.set('1.3', f.name.value.trim());
 		params.set('2', f.email.value.trim());
@@ -61,13 +56,14 @@
 		params.set('source_url', location.href);
 		params.set('date_created', gfDate());
 
-		fetch(CFG.leadUrl, { method: 'POST', mode: 'no-cors', body: params }).then(function () {
+		fetch(CFG.leadUrl, { method: 'POST', mode: 'cors', body: params }).then(function (response) {
+            if (!response.ok) throw new Error('The inquiry was not accepted.');
 			window.dataLayer = window.dataLayer || [];
 			window.dataLayer.push({ event: 'lead_submit', lead_priority: 'standard', source_form: 'contact' });
 			location.href = '/thank-you/';
 		}).catch(function () {
 			if (btn) { btn.disabled = false; btn.textContent = 'Send message'; }
-			err.textContent = 'Something went wrong — please try again in a moment.';
+			err.textContent = 'Something went wrong , please try again in a moment.';
 			err.hidden = false;
 		});
 	});

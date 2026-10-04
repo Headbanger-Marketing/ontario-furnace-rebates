@@ -1,15 +1,31 @@
 # Ontario Furnace Rebates
 
-> Ontario Furnace Rebates is an independent furnace & HVAC rebate concierge that helps Ontario homeowners find, estimate, and claim every rebate they qualify for on furnaces, air conditioners, and heat pumps.
+> Ontario Furnace Rebates is an independent information and inquiry website for Ontario homeowners planning furnace and hybrid quote review.
 
-Ontario Furnace Rebates is the free, independent place for Ontario homeowners to estimate furnace, AC and heat pump rebates, check eligibility, and get matched with a registered contractor who handles the application.
-
-## Key Pages
-
-- [Homepage](https://ontariofurnacerebates.ca/): Ontario Furnace Rebates is an independent furnace & HVAC rebate concierge that helps Ontario homeowners find, estimate, and claim every rebate they qualify for on furnaces, air conditioners, and heat pumps.
-- [How It Works](https://ontariofurnacerebates.ca/how-it-works/): The three-step process for checking eligibility, matching with a registered contractor, and getting paid.
-- [Who Qualifies](https://ontariofurnacerebates.ca/who-qualifies/): Eligibility requirements by home, fuel type, equipment, and contractor submission rules.
-- [Rebates Explained](https://ontariofurnacerebates.ca/rebates-explained/): Overview of Ontario furnace & HVAC rebate programs and how they can stack.
-- [Rebate Calculator](https://ontariofurnacerebates.ca/rebate-calculator/): Free 60-second estimate for Ontario homeowners.
-- [FAQ](https://ontariofurnacerebates.ca/faq/): Direct answers about rebate amounts, audits, deadlines, payments, and oil-heated homes.
-- [About](https://ontariofurnacerebates.ca/about/): Why Ontario Furnace Rebates is independent and how the free matching service works.
+- [Ontario furnace replacement: check the rebate claim first | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/): Learn why a standalone gas furnace is not an HRS heat pump rebate and compare repair, replacement and hybrid options.
+- [How to compare a furnace quote with a hybrid option | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/how-it-works/): A decision process for furnace repair, replacement or heat pump conversion before accepting a quote.
+- [Which furnace-related projects may use heat pump rebates? | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/who-qualifies/): Separate furnace-only work, compatible backup heating and eligible HRS heat pump projects.
+- [Check heat pump caps, then compare the furnace budget | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/rebate-calculator/): This checker covers heat pump caps and does not assign a rebate to a standalone furnace.
+- [Send a furnace or hybrid quote question | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/contact/): Ask about a furnace quote, existing equipment and any heat pump rebate line.
+- [Furnace quotes and Ontario incentive programs | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/rebates-explained/): Which incentive claims belong in a furnace quote, what needs a heat pump and what is closed.
+- [Furnace and hybrid quote questions | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/faq/): Answers about furnace-only rebates, existing furnaces, emergency replacement and quote comparisons.
+- [Why this guide starts with the furnace quote | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/about/): An independent guide for Ontario homeowners comparing furnace replacement and heat pump options.
+- [HRS: the heat pump can qualify, the backup furnace does not | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/rebates/home-renovation-savings-program/): How HRS handles a furnace paired with a qualifying heat pump.
+- [Before replacing an oil furnace, check Ontario support | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/rebates/oil-to-heat-pump-affordability/): Ontario oil-heated households may have an official no-cost heat pump installation route.
+- [Check old Enbridge rebate claims on a new furnace quote | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/rebates/enbridge-home-efficiency-rebate/): Identify outdated rebate references and ask for the current terms supporting a furnace sales offer.
+- [Do not budget a new furnace project around the closed federal loan | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/rebates/canada-greener-homes-loan/): New Canada Greener Homes Loan applications closed October 1, 2025.
+- [Local finance questions for a heating replacement | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/rebates/municipal-utility-programs/): Verify whether municipal support covers your heating project and how any loan is repaid.
+- [Furnace planning in Toronto: access and removal in a constrained property | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-toronto/): Compare a Toronto furnace project: access and removal in a constrained property, scope and heat pump funding.
+- [Furnace planning in Ottawa: backup heating controls in a hybrid quote | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-ottawa/): Compare a Ottawa furnace project: backup heating controls in a hybrid quote, scope and heat pump funding.
+- [Furnace planning in Mississauga: retaining a working furnace while replacing cooling | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-mississauga/): Compare a Mississauga furnace project: retaining a working furnace while replacing cooling, scope and heat pump funding.
+- [Furnace planning in Hamilton: duct repairs versus a larger furnace | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-hamilton/): Compare a Hamilton furnace project: duct repairs versus a larger furnace, scope and heat pump funding.
+- [Furnace planning in London: a diagnostic repair price alongside replacement | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-london/): Compare a London furnace project: a diagnostic repair price alongside replacement, scope and heat pump funding.
+- [Furnace planning in Brampton: heating work while occupants remain in the home | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-brampton/): Compare a Brampton furnace project: heating work while occupants remain in the home, scope and heat pump funding.
+- [Furnace planning in Kitchener-Waterloo: comparing an electric furnace with a heat pump | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-kitchener-waterloo/): Compare a Kitchener-Waterloo furnace project: comparing an electric furnace with a heat pump, scope and heat pump funding.
+- [Furnace planning in Windsor: coordinating heating and cooling replacement | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-windsor/): Compare a Windsor furnace project: coordinating heating and cooling replacement, scope and heat pump funding.
+- [Furnace planning in Barrie: scheduling a heating replacement before a loss of heat | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-barrie/): Compare a Barrie furnace project: scheduling a heating replacement before a loss of heat, scope and heat pump funding.
+- [Furnace planning in Kingston: checking whether the home uses a furnace or a boiler | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/furnace-rebate-kingston/): Compare a Kingston furnace project: checking whether the home uses a furnace or a boiler, scope and heat pump funding.
+- [October 2026: correct the incentive line on a furnace quote | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/hrs-2026-update/): Current furnace and heat pump incentive distinctions for Ontario replacement estimates.
+- [Heating quote notes | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/blog/): Practical checks for furnace replacement and hybrid heating estimates.
+- [Privacy and project inquiries | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/privacy-policy/): How information supplied to Ontario Furnace Rebates is used for project inquiries.
+- [Terms for the furnace quote guide | Ontario Furnace Rebates](https://ontariofurnacerebates.ca/terms/): Using furnace, hybrid heating and financing guidance before accepting an estimate.
