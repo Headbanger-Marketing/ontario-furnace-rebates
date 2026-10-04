@@ -221,6 +221,8 @@ for (const p of pages) {
   ...(p.url === '/hrs-2026-update/' ? [{ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.title, datePublished: '2026-06-06', dateModified: LASTMOD, author: { '@id': BASE + '/#org' }, publisher: { '@id': BASE + '/#org' }, mainEntityOfPage: BASE + p.url }] : []),
  ];
 }
+// The common privacy notice remains accessible without competing in search.
+for (const page of pages) if (page.url === '/privacy-policy/') page.noindex = true;
 const sitemap = pages.filter(p=>!p.noindex).map(p=>BASE+p.url);
 
 /* --- 404 --------------------------------------------------------------- */
