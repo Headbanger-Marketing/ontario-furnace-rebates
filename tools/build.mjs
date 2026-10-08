@@ -5,13 +5,14 @@
 import { copyFileSync, writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { buildContent } from './content.mjs';
+import { applyLandingDesign } from './landing.mjs';
 
 const DOCS = fileURLToPath(new URL('../docs', import.meta.url));
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const BASE = 'https://ontariofurnacerebates.ca';
 const VERIFIED = 'October 4, 2026';
 const YEAR = 2026;
-const LASTMOD = '2026-10-04';
+const LASTMOD = '2026-10-08';
 const BRAND = 'Ontario Furnace Rebates';
 const ENTITY_DESCRIPTION = 'Ontario Furnace Rebates is an independent information and inquiry website for Ontario homeowners planning furnace and hybrid quote review.';
 
@@ -184,7 +185,7 @@ function layout(page) {
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" />
-	<link rel="stylesheet" href="/assets/css/style.css?v=1.0.0" />
+	<link rel="stylesheet" href="/assets/css/style.css?v=1.1.0" />
 	${schema}
 </head>
 <body class="${page.bodyClass || ''}">
@@ -215,6 +216,7 @@ function write(url, html) {
 // Each site has a different purpose and authored content in content.mjs.
 const pages = buildContent({ brand: BRAND, contactForm: CONTACT_FORM });
 for (const p of pages) {
+ applyLandingDesign(p,{kind:'furnace'});
  p.schema = [
   p.url === '/' ? websiteSchema() : breadcrumb([{ name: 'Home', url: BASE + '/' }, { name: p.title.split(' | ')[0], url: BASE + p.url }]),
   ...(p.url === '/about/' ? [{ '@context': 'https://schema.org', '@type': 'AboutPage', name: p.title, url: BASE + p.url, mainEntity: { '@id': BASE + '/#org' } }] : []),
