@@ -1,7 +1,7 @@
 # Ontario Furnace Rebates — static site
 
 A **static, no-WordPress** version of the Ontario Furnace Rebates site, built to
-publish on **GitHub Pages**. Plain HTML/CSS/JS — no PHP, no database, no build
+publish on **Cloudflare**. Plain HTML/CSS/JS — no PHP, no database, no build
 step on the host. The published site lives in [`docs/`](docs/).
 
 This is an **independent rebate concierge** for Ontario homeowners — it helps
@@ -13,7 +13,7 @@ a contractor site and is not affiliated with any government body or utility.
 ## What's where
 
 ```
-docs/                      ← the published static site (GitHub Pages serves this)
+docs/                      ← generated static site uploaded to Cloudflare
 ├── index.html             Home
 ├── how-it-works/ … etc.   one folder per page (clean URLs)
 ├── rebates/<program>/     5 rebate-program spokes
@@ -32,20 +32,24 @@ assets/img/                ← source images (hero.webp, brand logos) copied int
 README.md
 ```
 
-## Publishing to GitHub Pages
+## Publishing to production
 
-1. Commit and push to `main`.
-2. Repo **Settings → Pages → Build and deployment**: Source = **Deploy from a
-   branch**, Branch = **`main`** (or whichever branch holds this), Folder = **`/docs`**. Save.
-3. The site builds at the GitHub Pages URL within a minute.
-4. **Custom domain:** the `docs/CNAME` file points the site at
-   `ontariofurnacerebates.ca`. Add a DNS record at your registrar pointing the
-   domain to GitHub Pages (a `CNAME` to `<user>.github.io`, or the four Pages
-   `A` records for an apex domain), then tick "Enforce HTTPS" in Settings → Pages.
+The production domain `ontariofurnacerebates.ca` serves the Cloudflare static-assets Worker `ontariofurnacerebates-ca` (configured in `wrangler.jsonc`) in Headbanger account `2289e342ce8e66726d9013a65ff4799b`. A GitHub commit or successful build workflow alone does not publish to that domain.
 
-> The internal links are root-absolute (`/rebate-calculator/`), so the site must
-> be served at a **domain root** — i.e. via the custom domain above (recommended),
-> not a `username.github.io/repo/` project sub-path.
+1. Review the intended source and regenerate `docs/` with `node tools/build.mjs`.
+2. Commit source and generated output to `main` (or use the existing build workflow for regeneration).
+3. From the reviewed checkout, use the existing Headbanger Cloudflare credential file. Never print credential values:
+
+```bash
+source ~/.cloudflare/headbanger-credentials
+export CLOUDFLARE_API_TOKEN="$CF_API_TOKEN"
+export CLOUDFLARE_ACCOUNT_ID=2289e342ce8e66726d9013a65ff4799b
+npx wrangler deploy
+```
+
+4. Compare the public HTML, CSS and calculator assets with the reviewed build. Preserve the domain's existing DNS and root-relative links.
+
+`docs/CNAME` is retained from the older GitHub Pages setup; it does not select the current production host. Do not repoint production DNS to GitHub Pages. See `/Volumes/Lexar/Projects/hvac/CLAUDE.md` for the portfolio deployment runbook.
 
 ## Editing content
 
