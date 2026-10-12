@@ -198,6 +198,7 @@ ${page.body}
 ${footerHTML()}
 <script src="/assets/js/hpro-config.js"></script>
 <script src="/assets/js/calculator.js" defer></script>
+<script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261012-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
 ${scripts}
 </body>
 </html>
