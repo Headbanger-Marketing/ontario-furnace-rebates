@@ -13,7 +13,7 @@ const DATA={
   cityHeadline:city=>`Heat pump rebates in ${city}.`,
   cityIntro:city=>`Check your heating category, then explore equipment and installation planning for your ${city} home.`,
   checkerHeadline:'Check your heat pump rebate.',
-  checkerIntro:'Answer four questions to see the purchased heat pump cap for your heating source. No contact details needed to check.',
+  checkerIntro:'Answer five questions to see the purchased heat pump cap for your heating source. No contact details needed to check.',
   steps:[['Check your cap','Start with your current heating source, ownership and Ontario postal code.'],['Request a project review','Share your plans for provider follow-up when you are ready. The inquiry is free and optional.'],['Get approval before installation','A participating HRS contractor confirms the equipment and obtains pre-installation approval.']],
   faqs:[['Can I keep my gas furnace?','A compatible furnace can remain as backup, subject to the equipment and control requirements. The rebate applies to the qualifying heat pump, not the backup furnace.'],['Does the checker approve my rebate?','No. It shows a published purchased-system cap. Home eligibility, equipment and rated capacity still need review by a participating contractor.'],['Can I replace an existing heat pump?','HRS excludes replacing an existing heat pump used for space heating. Check the equipment already in your home before budgeting a rebate.'],['What if I heat with oil?','Check Ontario affordability support before arranging a private purchase. Eligible households may use a separate direct-install route; its project value is not a cash rebate.']],
   ctaHeading:'Start with your heating source.',
@@ -23,7 +23,7 @@ const DATA={
  },
  furnace:{
   headline:'Replacing your furnace?',
-  intro:'Compare furnace and heat pump options, then check the heat pump funding that could fit your Ontario home.',
+  intro:'Compare furnace and heat pump options. HRS funds qualifying heat pumps, not a standalone furnace replacement.',
   cityPrefix:'furnace-rebate-',
   cityHeadline:city=>`Replacing a furnace in ${city}?`,
   cityIntro:city=>`Compare repair, replacement and heat pump options for your ${city} home before committing to a quote.`,

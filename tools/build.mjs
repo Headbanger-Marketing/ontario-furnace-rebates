@@ -12,7 +12,7 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const BASE = 'https://ontariofurnacerebates.ca';
 const VERIFIED = 'October 4, 2026';
 const YEAR = 2026;
-const LASTMOD = '2026-10-08';
+const LASTMOD = '2026-10-13';
 const BRAND = 'Ontario Furnace Rebates';
 const ENTITY_DESCRIPTION = 'Ontario Furnace Rebates is an independent information and inquiry website for Ontario homeowners planning furnace and hybrid quote review.';
 
@@ -188,7 +188,7 @@ function layout(page) {
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" />
-	<link rel="stylesheet" href="/assets/css/style.css?v=20261013" />
+	<link rel="stylesheet" href="/assets/css/style.css?v=20261013-audit2" />
 	${schema}
 </head>
 <body class="${page.bodyClass || ''}">
@@ -200,7 +200,7 @@ ${page.body}
 </article>
 ${footerHTML()}
 <script src="/assets/js/hpro-config.js"></script>
-<script src="/assets/js/calculator.js?v=20261013" defer></script>
+<script src="/assets/js/calculator.js?v=20261013-audit2" defer></script>
 <script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261013-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
 ${scripts}
 </body>

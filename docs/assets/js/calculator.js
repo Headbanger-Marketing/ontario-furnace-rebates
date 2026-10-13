@@ -52,9 +52,14 @@
 	var SYS = [
 		{ id: 'air-source', label: 'Air-source heat pump', sub: 'Most common , wall or ducted', icon: 'air' },
 		{ id: 'geothermal', label: 'Geothermal', sub: 'Ground-source , highest rebate', icon: 'geo' },
-		{ id: 'help', label: 'Not sure yet', sub: "We'll recommend the best fit", icon: 'help' }
+		{ id: 'help', label: 'Not sure yet', sub: 'Compare both published caps', icon: 'help' }
 	];
-	var TRUST = [
+	var EXISTING = [
+        { id: 'no', label: 'No existing heat pump', sub: 'Not used for space heating', icon: 'homeOwn' },
+        { id: 'yes', label: 'Yes, a heat pump heats my home', sub: 'Replacement is excluded from this HRS measure', icon: 'air' },
+        { id: 'not-sure', label: 'Not sure', sub: 'The existing equipment needs review', icon: 'help' }
+    ];
+    var TRUST = [
 		{ icon: 'shield', t: 'Independent' },
 		{ icon: 'check', t: 'Free & no obligation' },
 		{ icon: 'spark', t: 'HRS heat pump guidance' },
@@ -113,17 +118,19 @@
 	function result(ans) {
   var rule = RULES[ans.heat] || RULES['not-sure'] || {};
   var geo = ans.system === 'geothermal';
-  var known = ans.own === 'yes' && ans.heat !== 'not-sure' && ans.system !== 'help' && ontarioPostal(ans.postal);
+  var categoryKnown = ans.own === 'yes' && ans.existing === 'no' && ['natural-gas','electric','oil','propane','wood'].includes(ans.heat) && ontarioPostal(ans.postal);
+  var known = categoryKnown && ['air-source','geothermal'].includes(ans.system);
+  var comparison = categoryKnown && ans.system === 'help';
   var high = known ? Number(geo ? rule.geoMax : rule.airMax) || 0 : 0;
   return { low: 0, high: high, oil: false, geo: geo, oilHigh: 0,
-   qualified: known, label: rule.label || 'unknown', priority: rule.priority || 'standard' };
+   qualified: known, comparison: comparison, existing: ans.existing, airMax: Number(rule.airMax)||0, geoMax: Number(rule.geoMax)||0, label: rule.label || 'unknown', priority: rule.priority || 'standard' };
  }
 
 	/* ============================================================== widget */
 	function Calc(root) {
 		this.root = root;
 		this.root.classList.add('hpro-ui');
-		this.ans = { heat: null, own: null, postal: '', system: null };
+		this.ans = { heat: null, own: null, postal: '', existing: null, system: null };
 		this.step = 0; this.phase = 'q'; this.started = false; this.advancing = false;
 		this.form = { name: '', email: '', phone: '' };
 		this.renderQuestion();
@@ -140,7 +147,7 @@
 	};
 
 	Calc.prototype.renderQuestion = function () {
-		var TOTAL = 4, s = this.step, prog = ((s + 1) / TOTAL) * 100, body = '';
+		var TOTAL = 5, s = this.step, prog = ((s + 1) / TOTAL) * 100, body = '';
 
 		if (s === 0) {
 			body = '<div class="q fade-enter"><h2>How is your home heated now?</h2>' +
@@ -155,6 +162,8 @@
 				'<p class="qhint" id="hpro-postal-help">Enter the Ontario property postal code (starting K, L, M, N or P). It confirms the province for this cap checker; it does not select local programs.</p>' +
 				'<label class="flbl" for="hpro-postal">Ontario postal code</label><input aria-describedby="hpro-postal-help hpro-postal-error" class="field" id="hpro-postal" inputmode="text" maxlength="7" placeholder="A1A 1A1" autocomplete="postal-code" value="' + this.ans.postal + '"><p class="err" id="hpro-postal-error" role="alert" hidden></p></div>';
 		} else if (s === 3) {
+            body = '<div class="q fade-enter"><h2>Does a heat pump already heat your home?</h2>' + '<p class="qhint">HRS excludes replacing an existing heat pump used for space heating.</p>' + '<div class="opts">' + EXISTING.map(function (o) { return this.optHTML(o, EXISTING, false, 'existing'); }, this).join('') + '</div></div>';
+        } else if (s === 4) {
 			body = '<div class="q fade-enter"><h2>Air-source or geothermal?</h2>' +
 				'<p class="qhint">Not sure? Pick "Not sure yet" , most homes go air-source.</p>' +
 				'<div class="opts">' + SYS.map(function (o) { return this.optHTML(o, SYS, false, 'system'); }, this).join('') + '</div></div>';
@@ -185,14 +194,14 @@
 				if (self.advancing) return;
 				self.start();
 				var id = btn.getAttribute('data-id');
-				var key = s === 0 ? 'heat' : (s === 1 ? 'own' : 'system');
+				var key = s === 0 ? 'heat' : (s === 1 ? 'own' : (s === 3 ? 'existing' : 'system'));
 				self.ans[key] = id;
 				self.root.querySelectorAll('.opt').forEach(function (b) { b.classList.remove('sel'); var c = b.querySelector('.chk'); if (c) c.innerHTML = ''; });
 				btn.classList.add('sel'); var chk = btn.querySelector('.chk'); if (chk) chk.innerHTML = I.check(14, 2.6);
 				self.advancing = true;
 				setTimeout(function () {
 					self.advancing = false;
-					if (s === 3) self.toCalc();
+					if (s === 4) self.toCalc();
 					else self.go(s + 1);
 				}, 340);
 			});
@@ -220,52 +229,7 @@
 	Calc.prototype.go = function (n) { this.step = n; this.renderQuestion(); if(n!==2)focusHeading(this.root); };
 
 	/* ---- calculating ---- */
-	Calc.prototype.toCalc = function () {
-		var self = this;
-		if (!ontarioPostal(this.ans.postal)) { this.go(2); return; }
-		this.phase = 'calc';
-		var lines = ['Reviewing your answers', 'Selecting the heating category', 'Showing the published cap'];
-		var C = 2 * Math.PI * 34;
-		this.root.innerHTML =
-			'<div class="card"><div class="calc">' +
-				'<div class="ring"><svg class="r" width="84" height="84">' +
-					'<circle cx="42" cy="42" r="34" fill="none" stroke="var(--bg-2)" stroke-width="7"/>' +
-					'<circle id="hpro-ringfg" cx="42" cy="42" r="34" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '" style="transition:stroke-dashoffset .48s ease"/>' +
-				'</svg><div class="t">' + I.spark(26) + '</div></div>' +
-				'<div class="lab">Calculating your estimate…</div>' +
-				'<div class="sub">Organizing the details you provided.</div>' +
-				'<div class="steps">' + lines.map(function (l, i) {
-					return '<div class="ln" data-i="' + i + '"><span class="tick">' + I.clock(15) + '</span>' + l + '</div>';
-				}).join('') + '</div>' +
-			'</div></div>';
-
-		var fg = this.root.querySelector('#hpro-ringfg');
-		var lns = this.root.querySelectorAll('.ln');
-		var p = 0;
-		var tick = setInterval(function () {
-			p++;
-			var frac = Math.min(1, (p + 0.5) / 3.2);
-			if (fg) fg.setAttribute('stroke-dashoffset', C * (1 - frac));
-			lns.forEach(function (ln) {
-				var i = +ln.getAttribute('data-i');
-				if (p > i) { ln.classList.add('on'); ln.querySelector('.tick').innerHTML = I.check(15, 2.6); }
-			});
-			if (p >= 3) clearInterval(tick);
-		}, 480);
-
-		setTimeout(function () { self.toResult(); }, 1700);
-	};
-
-	/* ---- count-up ---- */
-	function countUp(el, target, dur, fmtFn) {
-		var start = Date.now();
-		var id = setInterval(function () {
-			var p = Math.min(1, (Date.now() - start) / dur);
-			var e = 1 - Math.pow(1 - p, 3);
-			el.textContent = fmtFn(target * e);
-			if (p >= 1) clearInterval(id);
-		}, 28);
-	}
+	Calc.prototype.toCalc = function () { if (!ontarioPostal(this.ans.postal)) { this.go(2); return; } this.toResult(); };
 
 	/* ---- result + lead ---- */
 	Calc.prototype.toResult = function () {
@@ -284,13 +248,13 @@
 		this.root.innerHTML =
 			'<div class="reveal">' +
 				'<div class="result-card">' +
-					'<span class="r-eyebrow"><span class="pulse"></span> Estimate ready' + postalTxt + '</span>' +
+					'<span class="r-eyebrow"><span class="pulse"></span> Published cap check' + postalTxt + '</span>' +
 					'<div class="r-label">Published purchased heat pump cap</div>' +
-					'<div class="r-amount">' + (r.qualified ? 'Up to <span id="hpro-hi">$0</span>' : 'Eligibility review required') + '</div>' +
-					'<p class="r-reassure">Based on a <b>' + r.label.toLowerCase() + '</b>-heated' + geoTxt + ' home in Ontario. This cap assumes no existing heat pump used for space heating; replacement of one is excluded. Qualifying capacity and all other conditions require contractor review. This is a cap, not approval.</p>' +
+					'<div class="r-amount' + (r.qualified ? '' : ' r-amount--status') + '">' + (r.qualified ? 'Up to <span id="hpro-hi">'+fmt(r.high)+'</span>' : r.comparison ? '<div class="r-options"><p>Air-source: up to '+fmt(r.airMax)+'</p><p>Ground-source: up to '+fmt(r.geoMax)+'</p></div>' : r.existing === 'yes' ? 'Existing heat pump replacement is excluded' : 'Eligibility review required') + '</div>' +
+					'<p class="r-reassure">Based on a <b>' + r.label.toLowerCase() + '</b>-heated' + geoTxt + ' home in Ontario. ' + (r.existing === 'yes' ? 'This HRS measure does not fund replacement of an existing space-heating heat pump. You can still request equipment planning; no funding is promised.' : r.existing !== 'no' ? 'Ask a contractor to identify your existing heating equipment before relying on a cap. Accessible equipment labels can help; do not remove covers.' : 'You indicated no existing space-heating heat pump. Equipment, rated capacity, property eligibility and pre-installation approval require participating-contractor review. These are published caps, not approval.') + (self.ans.heat === 'not-sure' ? ' Identify the current heating source from an accessible equipment label or ask the contractor to check it.' : '') + '</p>' +
 					standout +
 				'</div>' +
-				'<form class="lead" data-enquiry-form novalidate>' +
+				'<form method="post" class="lead" data-enquiry-form novalidate>' +
 					'<h3>Request a project review</h3>' +
 					'<p class="sub">Your enquiry goes to Jayden&#39;s Mechanical for project review. A participating contractor must confirm eligibility and availability.</p>' +
 					'<div class="form">' +
@@ -301,7 +265,7 @@
 						'</div>' +
 						'<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>' +
 					'<label class="consent consent-check"><input type="checkbox" name="consent" required> <span>I agree to share this enquiry with Headbanger Marketing and Jayden&#39;s Mechanical for follow-up. Service availability, appointments and program approval require confirmation. <a href="/privacy-policy/">Privacy</a>.</span></label>' +
-						'<button class="btn big full" type="submit">Request Review ' + I.arrow(18) + '</button>' +
+						'<button class="btn big full" type="submit" disabled>Request Review ' + I.arrow(18) + '</button>' +
 					'</div>' +
 					'<div class="reassure-row"><span class="r">' + I.check(14) + ' Free</span><span class="r">' + I.shield(14) + ' No obligation</span><span class="r">' + I.noSell(14) + ' Provider follow-up</span></div>' +
 					'<p class="err" id="hpro-lead-error" role="alert" tabindex="-1" hidden></p>' +
@@ -310,8 +274,7 @@
 			'</div>';
 
 
-		if (r.qualified) countUp(this.root.querySelector('#hpro-hi'), r.high, 1250, fmt);
-		if (r.oil) countUp(this.root.querySelector('#hpro-oil'), r.oilHigh, 1500, fmt);
+
 
 		this.bindLead(r);focusHeading(this.root);
 	};
@@ -335,12 +298,14 @@
 			if(form.querySelector('[name=company_website]').value){sending=false;btn.disabled=false;announce(form,'Your enquiry could not be confirmed.');return;}
 
 			var name = fields.name.value.trim();
+            var submittedChannel = form.querySelector('[name=contact_method]:checked').value;
 			var msgLines = [
 				'HVAC rebate calculator lead',
 				'Fuel type: ' + labelOf(HEAT, self.ans.heat),
 				'Owns home: ' + labelOf(OWN, self.ans.own),
+                'Existing space-heating heat pump: ' + labelOf(EXISTING, self.ans.existing),
 				'System interest: ' + labelOf(SYS, self.ans.system),
-				'Purchased heat pump cap: ' + (r.qualified ? fmt(r.high) : 'Eligibility review required'),
+				'Purchased heat pump cap: ' + (r.qualified ? fmt(r.high) : r.comparison ? 'Air-source up to '+fmt(r.airMax)+', ground-source up to '+fmt(r.geoMax) : r.existing === 'yes' ? 'Existing replacement excluded' : 'Eligibility review required'),
 				'Lead priority: ' + r.priority, 'Contact preference: '+form.querySelector('[name=contact_method]:checked').value,'Consent: Headbanger Marketing and Jaydens Mechanical follow-up'
 			];
 			var u = utms(), camp = [];
@@ -365,21 +330,22 @@
 
 			send(params).then(function () {
 				dl('lead_submit', { lead_priority: r.priority, fuel_type: self.ans.heat, system_type: self.ans.system });
-				self.done(name);
+				self.done(name, submittedChannel);
 			}).catch(function () {
 				sending=false;btn.disabled=false;btn.innerHTML='Request Review '+I.arrow(18);
 				announce(form,'We could not confirm receipt. Your details are still here. The request may already have arrived; check for follow-up before sending again.');
 			});
 		});
+        btn.disabled = false;
 	};
 
-	Calc.prototype.done = function (name) {
+	Calc.prototype.done = function (name, channel) {
 		var first = (name || '').split(' ')[0];
 		this.root.innerHTML =
 			'<div class="reveal"><div class="result-card done-card">' +
 				'<div class="big-ic">' + I.check(34, 2.4) + '</div>' +
 				'<h3>Enquiry received.</h3>' +
-				'<p>Your enquiry was received for review by Jayden&#39;s Mechanical. It is not a program application or funding approval.</p>' +
+				'<p>Your enquiry was received for review by Jayden&#39;s Mechanical. It is not a program application or funding approval. ' + (channel === 'phone' ? 'Watch for a phone call using the number you provided.' : 'Check the email address you provided for follow-up.') + '</p>' +
 				'<button type="button" class="restart">' + I.arrowL(14) + ' Start over</button>' +
 			'</div></div>';
 		focusHeading(this.root);var self = this;
@@ -387,7 +353,7 @@
 	};
 
 	Calc.prototype.reset = function () {
-		this.ans = { heat: null, own: null, postal: '', system: null };
+		this.ans = { heat: null, own: null, postal: '', existing: null, system: null };
 		this.step = 0; this.phase = 'q'; this.form = { name: '', email: '', phone: '' };
 		this.renderQuestion();
 	};
