@@ -32,16 +32,19 @@ const icon = (name, s = 16, w = 1.9) =>
 	`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ''}</svg>`;
 
 const CONTACT_FORM = `<form id="hpro-contact-form" class="hpro-contact" novalidate>
-	<div class="hpro-field"><label for="cf-name">First name</label><input id="cf-name" name="name" autocomplete="given-name" required></div>
+	<div class="hpro-field"><label for="cf-name">First name (required)</label><input id="cf-name" name="name" autocomplete="given-name" required></div>
+	<fieldset class="contact-choice"><legend>How should the team contact you?</legend><label><input type="radio" name="contact_method" value="email" checked> Email</label><label><input type="radio" name="contact_method" value="phone"> Phone call</label></fieldset>
 	<div class="hpro-row2">
-		<div class="hpro-field"><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" autocomplete="email"></div>
-		<div class="hpro-field"><label for="cf-phone">Phone</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel"></div>
+		<div class="hpro-field"><label for="cf-email">Email (required when selected)</label><input id="cf-email" name="email" type="email" autocomplete="email"></div>
+		<div class="hpro-field"><label for="cf-phone">Phone (required when selected)</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel"></div>
 	</div>
 	<div class="hpro-field"><label for="cf-msg">Message</label><textarea id="cf-msg" name="message" rows="4"></textarea></div>
 	<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
-	<label class="hpro-consent"><input type="checkbox" name="consent"> <span>I agree to be contacted about my rebate estimate. Your inquiry may be shared with a relevant provider for follow-up.</span></label>
-	<p class="err" hidden></p>
-	<button class="hpro-btn" type="submit">Send message</button>
+	<label class="hpro-consent"><input type="checkbox" name="consent" required> <span>I agree to share this enquiry with Headbanger Marketing and Jayden&#39;s Mechanical for follow-up. Service availability, appointments and program approval require confirmation.</span></label>
+	<p class="err" id="hpro-contact-error" role="alert" tabindex="-1" hidden></p>
+	<p>Your enquiry goes to Jayden&#39;s Mechanical for review. An appointment requires confirmation.</p>
+	<button class="hpro-btn" type="submit" disabled>Send message</button>
+	<noscript><p>Enable JavaScript to send this form, or email <a href="mailto:contact@ontariofurnacerebates.ca">contact@ontariofurnacerebates.ca</a>.</p></noscript>
 </form>`;
 
 /* ------------------------------------------------------------------ chrome */
@@ -185,7 +188,7 @@ function layout(page) {
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" />
-	<link rel="stylesheet" href="/assets/css/style.css?v=1.1.0" />
+	<link rel="stylesheet" href="/assets/css/style.css?v=20261013" />
 	${schema}
 </head>
 <body class="${page.bodyClass || ''}">
@@ -197,8 +200,8 @@ ${page.body}
 </article>
 ${footerHTML()}
 <script src="/assets/js/hpro-config.js"></script>
-<script src="/assets/js/calculator.js" defer></script>
-<script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261012-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
+<script src="/assets/js/calculator.js?v=20261013" defer></script>
+<script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261013-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
 ${scripts}
 </body>
 </html>

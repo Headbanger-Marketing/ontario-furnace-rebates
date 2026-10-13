@@ -1,5 +1,5 @@
 /** Contact inquiry handler. Preserve the shared Gravity Forms field mapping.
- * An accepted HTTP CORS response is required before redirecting to receipt.
+ * An explicit stored-enquiry receipt is required before redirecting.
  * HTTP or network failure leaves entered fields in place for a retry.
  */
 (function () {
@@ -8,7 +8,8 @@
 	if (!form || typeof window.HPRO_CALC === 'undefined') return;
 	var CFG = window.HPRO_CALC;
 	var btn = form.querySelector('button[type=submit]');
-	var err = form.querySelector('.err');
+	var err=form.querySelector('.err'),intake=window.HPRO_INTAKE,sending=false;
+	if(!intake)return;intake.bindContact(form);if(btn)btn.disabled=false;
 
 	function utms() {
 		var q = new URLSearchParams(location.search), o = {};
@@ -26,18 +27,13 @@
 			message: form.querySelector('[name=message]'),
 			consent: form.querySelector('[name=consent]')
 		};
-		var emailOk = /\S+@\S+\.\S+/.test(f.email.value);
-		var phoneOk = f.phone.value.replace(/\D/g, '').length >= 10;
-		if (!f.name.value.trim() || (!emailOk && !phoneOk) || !f.consent.checked) {
-			err.textContent = 'Please add your name, an email or phone, and check the consent box.';
-			err.hidden = false; return;
-		}
+		if(sending||!intake.validate(form))return;
 		// Honeypot.
-		if (form.querySelector('[name=company_website]').value) { location.href = '/thank-you/'; return; }
+		if(form.querySelector('[name=company_website]').value){intake.announce(form,'Your enquiry could not be confirmed.');return;}
 
-		err.hidden = true; if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+		err.hidden=true;sending=true;if(btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
-		var msg = f.message.value.trim();
+		var msg=f.message.value.trim()+'\nContact preference: '+form.querySelector('[name=contact_method]:checked').value+'\nConsent: Headbanger Marketing and Jaydens Mechanical follow-up';
 		var u = utms(), camp = [];
 		['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) { if (u[k]) camp.push(k + '=' + u[k]); });
 		if (camp.length) msg += '\n\n, Campaign: ' + camp.join(' ');
@@ -47,24 +43,22 @@
 		// date_created). Contact form has no address, so 5.x stay blank.
 		var params = new URLSearchParams();
 		params.set('1.3', f.name.value.trim());
-		params.set('2', f.email.value.trim());
+		params.set('2',f.email.disabled?'':f.email.value.trim());
 		params.set('3', msg);
-		params.set('4', f.phone.value.trim());
+		params.set('4',f.phone.disabled?'':f.phone.value.trim());
 		params.set('5.1', '');
 		params.set('5.3', '');
 		params.set('5.5', '');
 		params.set('source_url', location.href);
 		params.set('date_created', gfDate());
 
-		fetch(CFG.leadUrl, { method: 'POST', mode: 'cors', body: params }).then(function (response) {
-            if (!response.ok) throw new Error('The inquiry was not accepted.');
+		intake.send(params).then(function () {
 			window.dataLayer = window.dataLayer || [];
 			window.dataLayer.push({ event: 'lead_submit', lead_priority: 'standard', source_form: 'contact' });
 			location.href = '/thank-you/';
 		}).catch(function () {
-			if (btn) { btn.disabled = false; btn.textContent = 'Send message'; }
-			err.textContent = 'Something went wrong , please try again in a moment.';
-			err.hidden = false;
+			sending=false;if(btn){btn.disabled=false;btn.textContent='Send message';}
+			intake.announce(form,'We could not confirm receipt. Your details are still here. The request may already have arrived; check for follow-up before sending again.');
 		});
 	});
 })();

@@ -22,7 +22,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" />
-	<link rel="stylesheet" href="/assets/css/style.css?v=1.1.0" />
+	<link rel="stylesheet" href="/assets/css/style.css?v=20261013" />
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":["Organization","ProfessionalService"],"@id":"https://ontariofurnacerebates.ca/#org","name":"Ontario Furnace Rebates","url":"https://ontariofurnacerebates.ca/","logo":"https://ontariofurnacerebates.ca/assets/img/logo-horizontal.svg","description":"Ontario Furnace Rebates is an independent information and inquiry website for Ontario homeowners planning furnace and hybrid quote review.","areaServed":{"@type":"State","name":"Ontario","containedInPlace":{"@type":"Country","name":"Canada"}},"knowsAbout":["Ontario furnace rebates","Ontario HVAC rebates","Home Renovation Savings Program","Oil to Heat Pump Affordability","Canada Greener Homes Loan","furnace and AC rebate eligibility"],"priceRange":"Free"}</script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ontariofurnacerebates.ca/"},{"@type":"ListItem","position":2,"name":"Send a furnace or hybrid quote question","item":"https://ontariofurnacerebates.ca/contact/"}]}</script>
 </head>
@@ -46,16 +46,19 @@
 <article class="hpro-page">
 	<div class="entry-content">
 <section class="hpro-section"><div class="hpro-wrap hpro-prose" style="max-width:900px"><h1>Send a furnace or hybrid quote question</h1><p>Include whether you need a furnace repair, a furnace-only replacement, or a heat pump paired with a furnace. If a quote deducts a rebate, tell us the program name and which equipment appears on that line. Remove account numbers and personal documents before sharing details.</p><form id="hpro-contact-form" class="hpro-contact" novalidate>
-	<div class="hpro-field"><label for="cf-name">First name</label><input id="cf-name" name="name" autocomplete="given-name" required></div>
+	<div class="hpro-field"><label for="cf-name">First name (required)</label><input id="cf-name" name="name" autocomplete="given-name" required></div>
+	<fieldset class="contact-choice"><legend>How should the team contact you?</legend><label><input type="radio" name="contact_method" value="email" checked> Email</label><label><input type="radio" name="contact_method" value="phone"> Phone call</label></fieldset>
 	<div class="hpro-row2">
-		<div class="hpro-field"><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" autocomplete="email"></div>
-		<div class="hpro-field"><label for="cf-phone">Phone</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel"></div>
+		<div class="hpro-field"><label for="cf-email">Email (required when selected)</label><input id="cf-email" name="email" type="email" autocomplete="email"></div>
+		<div class="hpro-field"><label for="cf-phone">Phone (required when selected)</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel"></div>
 	</div>
 	<div class="hpro-field"><label for="cf-msg">Message</label><textarea id="cf-msg" name="message" rows="4"></textarea></div>
 	<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
-	<label class="hpro-consent"><input type="checkbox" name="consent"> <span>I agree to be contacted about my rebate estimate. Your inquiry may be shared with a relevant provider for follow-up.</span></label>
-	<p class="err" hidden></p>
-	<button class="hpro-btn" type="submit">Send message</button>
+	<label class="hpro-consent"><input type="checkbox" name="consent" required> <span>I agree to share this enquiry with Headbanger Marketing and Jayden&#39;s Mechanical for follow-up. Service availability, appointments and program approval require confirmation.</span></label>
+	<p class="err" id="hpro-contact-error" role="alert" tabindex="-1" hidden></p>
+	<p>Your enquiry goes to Jayden&#39;s Mechanical for review. An appointment requires confirmation.</p>
+	<button class="hpro-btn" type="submit" disabled>Send message</button>
+	<noscript><p>Enable JavaScript to send this form, or email <a href="mailto:contact@ontariofurnacerebates.ca">contact@ontariofurnacerebates.ca</a>.</p></noscript>
 </form><h2>An inquiry is not an application</h2><p>A response can help you organize questions for a provider. Program administrators approve funding, while you agree on equipment, scope and price with the contractor.</p></div></section>
 	</div>
 </article>
@@ -84,8 +87,8 @@
 })();
 </script>
 <script src="/assets/js/hpro-config.js"></script>
-<script src="/assets/js/calculator.js" defer></script>
-<script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261012-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
-<script src="/assets/js/contact-form.js" defer></script>
+<script src="/assets/js/calculator.js?v=20261013" defer></script>
+<script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261013-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
+<script src="/assets/js/contact-form.js?v=20261013" defer></script>
 </body>
 </html>

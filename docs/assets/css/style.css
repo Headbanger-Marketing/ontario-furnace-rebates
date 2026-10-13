@@ -564,3 +564,10 @@ body { margin: 0; }
  html { scroll-behavior: auto; }
  *,*::before,*::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* CRO: clear contact choice and unobstructed calculator. */
+.contact-choice{border:0;padding:0;margin:0 0 14px;display:flex;gap:18px;flex-wrap:wrap}.contact-choice legend{font-weight:650;font-size:.85rem;margin-bottom:8px}.contact-choice label{display:flex;align-items:center;gap:8px}.contact-choice input{width:18px;height:18px}.consent-check{display:flex;align-items:flex-start;gap:10px}.consent-check input{width:18px;height:18px;flex:none;margin-top:3px}.hpro-ui [hidden],.hpro-contact [hidden]{display:none!important}.hpro-stickybar.is-checker-visible{display:none!important}.hpro-ui [aria-invalid=true],.hpro-contact [aria-invalid=true]{border-color:#a52222}.hpro-ui .field,.hpro-contact input,.hpro-contact textarea{font-size:16px} [data-hpro-calc],.hpro-contact{scroll-margin-top:110px}
+
+.hpro-ui .consent-check{color:var(--ink-soft);font-size:.83rem;line-height:1.5;margin:4px 0 14px;text-align:left}.hpro-ui .consent-check a{color:var(--accent);text-decoration:underline}
+
+.hpro-contact input,.hpro-contact textarea{box-sizing:border-box;min-width:0}

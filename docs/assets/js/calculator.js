@@ -1,6 +1,6 @@
 /** Heat pump program-cap checker and inquiry form.
  * Numeric caps come from hpro-config.js. Qualifying capacity and eligibility
- * require review. Inquiry success requires an accepted HTTP CORS response.
+ * require review. Inquiry success requires an explicit stored-enquiry receipt.
  */
 (function () {
 	'use strict';
@@ -76,6 +76,39 @@
 	function labelOf(arr, id) { for (var i = 0; i < arr.length; i++) { if (arr[i].id === id) return arr[i].label; } return id || ''; }
 	function gfDate() { var d = new Date(); function p(n) { return (n < 10 ? '0' : '') + n; } return d.getUTCFullYear() + '-' + p(d.getUTCMonth() + 1) + '-' + p(d.getUTCDate()) + ' ' + p(d.getUTCHours()) + ':' + p(d.getUTCMinutes()) + ':' + p(d.getUTCSeconds()); }
 
+	// Shared by the checker and contact page; preserve values until storage is confirmed.
+	function announce(form, message, field) {
+		var err=form.querySelector('.err'); err.textContent=message; err.hidden=false;
+		err.setAttribute('role','alert');err.setAttribute('tabindex','-1');
+		form.querySelectorAll('[aria-invalid]').forEach(function(el){el.removeAttribute('aria-invalid');});
+		if(field){field.setAttribute('aria-invalid','true');field.setAttribute('aria-describedby',err.id);field.focus();}else err.focus();
+	}
+	function bindContact(form) {
+		var channels=form.querySelectorAll('[name=contact_method]');
+		function sync(){var selected=form.querySelector('[name=contact_method]:checked').value;
+			['email','phone'].forEach(function(k){var el=form.querySelector('[name='+k+']');el.required=k===selected;el.disabled=k!==selected;el.closest('label,.hpro-field').hidden=k!==selected;});}
+		channels.forEach(function(el){el.addEventListener('change',sync);});sync();
+	}
+	function validate(form) {
+		var name=form.querySelector('[name=name]'),method=form.querySelector('[name=contact_method]:checked').value,contact=form.querySelector('[name='+method+']'),consent=form.querySelector('[name=consent]');
+		if(!name.value.trim()){announce(form,'Please enter your first name.',name);return false;}
+		var valid=method==='email'?/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact.value.trim()):contact.value.replace(/\D/g,'').length>=10;
+		if(!valid){announce(form,method==='email'?'Enter a valid email address.':'Enter a phone number with at least 10 digits.',contact);return false;}
+		if(consent&&!consent.checked){announce(form,'Please agree to share this enquiry for follow-up.',consent);return false;}
+		return true;
+	}
+	function send(params) {
+		var controller=new AbortController(), timer=setTimeout(function(){controller.abort();},90000);
+		return fetch(CFG.leadUrl,{method:'POST',mode:'cors',body:params,signal:controller.signal}).then(function(response){
+			return response.json().catch(function(){throw Error('unconfirmed');}).then(function(body){
+				if(!response.ok||!body||typeof body!=='object'||body.accepted===false||body.success===false||body.ok===false||body.error||(body.errors&&(!Array.isArray(body.errors)||body.errors.length))||['failed','error','rejected'].includes(body.status)||!(body.accepted===true||body.success===true))throw Error('unconfirmed');
+				return body;
+			});
+		}).finally(function(){clearTimeout(timer);});
+	}
+	window.HPRO_INTAKE={send:send,bindContact:bindContact,validate:validate,announce:announce};
+	function focusHeading(root){var heading=root.querySelector('h2,h3');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}}
+
 	/* result numbers from ACF rule text */
 	function result(ans) {
   var rule = RULES[ans.heat] || RULES['not-sure'] || {};
@@ -119,8 +152,8 @@
 				'<div class="opts">' + OWN.map(function (o) { return this.optHTML(o, OWN, false, 'own'); }, this).join('') + '</div></div>';
 		} else if (s === 2) {
 			body = '<div class="q fade-enter"><h2>What\'s your postal code?</h2>' +
-				'<p class="qhint">Enter the Ontario property postal code (starting K, L, M, N or P). It confirms the province for this cap checker; it does not select local programs.</p>' +
-				'<input class="field" id="hpro-postal" inputmode="text" maxlength="7" placeholder="A1A 1A1" autocomplete="postal-code" value="' + this.ans.postal + '"></div>';
+				'<p class="qhint" id="hpro-postal-help">Enter the Ontario property postal code (starting K, L, M, N or P). It confirms the province for this cap checker; it does not select local programs.</p>' +
+				'<label class="flbl" for="hpro-postal">Ontario postal code</label><input aria-describedby="hpro-postal-help hpro-postal-error" class="field" id="hpro-postal" inputmode="text" maxlength="7" placeholder="A1A 1A1" autocomplete="postal-code" value="' + this.ans.postal + '"><p class="err" id="hpro-postal-error" role="alert" hidden></p></div>';
 		} else if (s === 3) {
 			body = '<div class="q fade-enter"><h2>Air-source or geothermal?</h2>' +
 				'<p class="qhint">Not sure? Pick "Not sure yet" , most homes go air-source.</p>' +
@@ -128,12 +161,12 @@
 		}
 
 		var contBtn = (s === 2)
-			? '<button type="button" class="btn" id="hpro-cont"' + (!ontarioPostal(this.ans.postal) ? ' disabled' : '') + '>Continue ' + I.arrow(17) + '</button>'
+			? '<button type="button" class="btn" id="hpro-cont"' + '>Continue ' + I.arrow(17) + '</button>'
 			: '';
 
 		this.root.innerHTML =
 			'<div class="card">' +
-				'<div class="card-top"><span class="step-meta">Step <b>' + (s + 1) + '</b> of ' + TOTAL + '</span>' +
+				'<div class="card-top"><span class="step-meta" role="status" aria-live="polite">Step <b>' + (s + 1) + '</b> of ' + TOTAL + '</span>' +
 				'<span class="secure">' + I.lock(13) + ' Secure</span></div>' +
 				'<div class="bar"><i style="width:' + prog + '%"></i></div>' +
 				'<div class="swap">' + body + '</div>' +
@@ -171,11 +204,12 @@
 			var sync = function () {
 				self.ans.postal = input.value.toUpperCase().replace(/[^A-Z0-9 ]/g, '').slice(0, 7);
 				input.value = self.ans.postal;
-				if (cont) cont.disabled = !ontarioPostal(self.ans.postal);
+				input.removeAttribute('aria-invalid');self.root.querySelector('#hpro-postal-error').hidden=true;
 			};
 			input.addEventListener('input', sync);
-			input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && ontarioPostal(self.ans.postal)) self.go(3); });
-			if (cont) cont.addEventListener('click', function () { if (ontarioPostal(self.ans.postal)) self.go(3); });
+			function advance(){if(ontarioPostal(self.ans.postal)){self.go(3);}else{var err=self.root.querySelector('#hpro-postal-error');err.textContent='Enter a valid Ontario postal code, such as N6A 1A1.';err.hidden=false;input.setAttribute('aria-invalid','true');input.focus();}}
+			input.addEventListener('keydown', function(e){if(e.key==='Enter'){e.preventDefault();advance();}});
+			if(cont)cont.addEventListener('click',advance);
 			setTimeout(function () { input.focus(); }, 60);
 		}
 
@@ -183,7 +217,7 @@
 		if (back) back.addEventListener('click', function () { if (s > 0) self.go(s - 1); });
 	};
 
-	Calc.prototype.go = function (n) { this.step = n; this.renderQuestion(); };
+	Calc.prototype.go = function (n) { this.step = n; this.renderQuestion(); if(n!==2)focusHeading(this.root); };
 
 	/* ---- calculating ---- */
 	Calc.prototype.toCalc = function () {
@@ -256,21 +290,21 @@
 					'<p class="r-reassure">Based on a <b>' + r.label.toLowerCase() + '</b>-heated' + geoTxt + ' home in Ontario. This cap assumes no existing heat pump used for space heating; replacement of one is excluded. Qualifying capacity and all other conditions require contractor review. This is a cap, not approval.</p>' +
 					standout +
 				'</div>' +
-				'<form class="lead" novalidate>' +
+				'<form class="lead" data-enquiry-form novalidate>' +
 					'<h3>Request a project review</h3>' +
-					'<p class="sub">Share your project details for follow-up. A participating contractor must confirm eligibility.</p>' +
+					'<p class="sub">Your enquiry goes to Jayden&#39;s Mechanical for project review. A participating contractor must confirm eligibility and availability.</p>' +
 					'<div class="form">' +
-						'<label class="flbl"><span>First name</span><input class="field lc" name="name" placeholder="Jordan" autocomplete="given-name"></label>' +
-						'<div class="row2">' +
-							'<label class="flbl"><span>Email</span><input class="field lc" name="email" type="email" placeholder="you@email.com" autocomplete="email"></label>' +
-							'<label class="flbl"><span>Phone</span><input class="field lc" name="phone" type="tel" placeholder="(416) 555-0123" autocomplete="tel"></label>' +
+						'<label class="flbl"><span>First name (required)</span><input required class="field lc" name="name" placeholder="Jordan" autocomplete="given-name"></label>' +
+						'<fieldset class="contact-choice"><legend>How should the team contact you?</legend><label><input type="radio" name="contact_method" value="email" checked> Email</label><label><input type="radio" name="contact_method" value="phone"> Phone call</label></fieldset>' + '<div class="row2">' +
+							'<label class="flbl"><span>Email (required when selected)</span><input class="field lc" name="email" type="email" placeholder="you@email.com" autocomplete="email"></label>' +
+							'<label class="flbl"><span>Phone (required when selected)</span><input class="field lc" name="phone" type="tel" placeholder="(416) 555-0123" autocomplete="tel"></label>' +
 						'</div>' +
 						'<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>' +
-						'<button class="btn big full" type="submit" disabled>Request Review ' + I.arrow(18) + '</button>' +
+					'<label class="consent consent-check"><input type="checkbox" name="consent" required> <span>I agree to share this enquiry with Headbanger Marketing and Jayden&#39;s Mechanical for follow-up. Service availability, appointments and program approval require confirmation. <a href="/privacy-policy/">Privacy</a>.</span></label>' +
+						'<button class="btn big full" type="submit">Request Review ' + I.arrow(18) + '</button>' +
 					'</div>' +
 					'<div class="reassure-row"><span class="r">' + I.check(14) + ' Free</span><span class="r">' + I.shield(14) + ' No obligation</span><span class="r">' + I.noSell(14) + ' Provider follow-up</span></div>' +
-					'<p class="err" hidden></p>' +
-					'<p class="consent">By submitting, you agree to be contacted about your rebate estimate. Your inquiry may be shared with a relevant provider. Program approval is separate. <a href="/privacy-policy/">Privacy</a>.</p>' +
+					'<p class="err" id="hpro-lead-error" role="alert" tabindex="-1" hidden></p>' +
 				'</form>' +
 				'<div style="text-align:center"><button type="button" class="restart">' + I.arrowL(14) + ' Start over</button></div>' +
 			'</div>';
@@ -279,7 +313,7 @@
 		if (r.qualified) countUp(this.root.querySelector('#hpro-hi'), r.high, 1250, fmt);
 		if (r.oil) countUp(this.root.querySelector('#hpro-oil'), r.oilHigh, 1500, fmt);
 
-		this.bindLead(r);
+		this.bindLead(r);focusHeading(this.root);
 	};
 
 	Calc.prototype.bindLead = function (r) {
@@ -288,21 +322,17 @@
 		var err = form.querySelector('.err');
 		var fields = { name: form.querySelector('[name=name]'), email: form.querySelector('[name=email]'), phone: form.querySelector('[name=phone]') };
 
-		function valid() {
-			return fields.name.value.trim() && /\S+@\S+\.\S+/.test(fields.email.value) && fields.phone.value.replace(/\D/g, '').length >= 10;
-		}
-		function refresh() { btn.disabled = !valid(); }
-		Object.keys(fields).forEach(function (k) { fields[k].addEventListener('input', refresh); });
+		bindContact(form); var sending=false;
 
 		this.root.querySelector('.restart').addEventListener('click', function () { self.reset(); });
 
 		form.addEventListener('submit', function (e) {
 			e.preventDefault();
-			if (!valid()) return;
-			err.hidden = true; btn.disabled = true; btn.textContent = 'Sending…';
+			if(sending||!validate(form))return;
+			err.hidden=true;sending=true;btn.disabled=true;btn.textContent='Sending…';
 
 			// Honeypot , real users never fill this; silently "succeed" and drop.
-			if (form.querySelector('[name=company_website]').value) { self.done(fields.name.value.trim()); return; }
+			if(form.querySelector('[name=company_website]').value){sending=false;btn.disabled=false;announce(form,'Your enquiry could not be confirmed.');return;}
 
 			var name = fields.name.value.trim();
 			var msgLines = [
@@ -311,7 +341,7 @@
 				'Owns home: ' + labelOf(OWN, self.ans.own),
 				'System interest: ' + labelOf(SYS, self.ans.system),
 				'Purchased heat pump cap: ' + (r.qualified ? fmt(r.high) : 'Eligibility review required'),
-				'Lead priority: ' + r.priority
+				'Lead priority: ' + r.priority, 'Contact preference: '+form.querySelector('[name=contact_method]:checked').value,'Consent: Headbanger Marketing and Jaydens Mechanical follow-up'
 			];
 			var u = utms(), camp = [];
 			['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) { if (u[k]) camp.push(k + '=' + u[k]); });
@@ -324,23 +354,21 @@
 			// keys. A CORS response must confirm HTTP success before the UI shows receipt.
 			var params = new URLSearchParams();
 			params.set('1.3', name);
-			params.set('2', fields.email.value.trim());
+			params.set('2',fields.email.disabled?'':fields.email.value.trim());
 			params.set('3', msgLines.join('\n'));
-			params.set('4', fields.phone.value.trim());
+			params.set('4',fields.phone.disabled?'':fields.phone.value.trim());
 			params.set('5.1', '');
 			params.set('5.3', '');
 			params.set('5.5', self.ans.postal || '');
 			params.set('source_url', location.href);
 			params.set('date_created', gfDate());
 
-			fetch(CFG.leadUrl, { method: 'POST', mode: 'cors', body: params }).then(function (response) {
-            if (!response.ok) throw new Error('The inquiry was not accepted.');
+			send(params).then(function () {
 				dl('lead_submit', { lead_priority: r.priority, fuel_type: self.ans.heat, system_type: self.ans.system });
 				self.done(name);
 			}).catch(function () {
-				btn.disabled = false; btn.innerHTML = 'Request Review ' + I.arrow(18);
-				err.textContent = 'Something went wrong , please try again in a moment.';
-				err.hidden = false;
+				sending=false;btn.disabled=false;btn.innerHTML='Request Review '+I.arrow(18);
+				announce(form,'We could not confirm receipt. Your details are still here. The request may already have arrived; check for follow-up before sending again.');
 			});
 		});
 	};
@@ -350,11 +378,11 @@
 		this.root.innerHTML =
 			'<div class="reveal"><div class="result-card done-card">' +
 				'<div class="big-ic">' + I.check(34, 2.4) + '</div>' +
-				'<h3>You\'re all set' + (first ? ', ' + first : '') + '.</h3>' +
-				'<p>Your inquiry was received for review and provider follow-up. It is not a program application or funding approval.</p>' +
+				'<h3>Enquiry received.</h3>' +
+				'<p>Your enquiry was received for review by Jayden&#39;s Mechanical. It is not a program application or funding approval.</p>' +
 				'<button type="button" class="restart">' + I.arrowL(14) + ' Start over</button>' +
 			'</div></div>';
-		var self = this;
+		focusHeading(this.root);var self = this;
 		this.root.querySelector('.restart').addEventListener('click', function () { self.reset(); });
 	};
 
@@ -373,6 +401,7 @@
 			if (!el.__hpro) { el.__hpro = true; new Calc(el); }
 		});
 	}
+	var sticky=document.querySelector('.hpro-stickybar');if(sticky){var checkers=document.querySelectorAll('[data-hpro-calc],#hpro-contact-form');function placeSticky(){sticky.classList.toggle('is-checker-visible',Array.from(checkers).some(function(el){var r=el.getBoundingClientRect();return r.width>0&&Math.min(r.bottom,innerHeight)-Math.max(r.top,0)>80;}));}addEventListener('scroll',placeSticky,{passive:true});addEventListener('resize',placeSticky);if(window.IntersectionObserver)checkers.forEach(function(el){new IntersectionObserver(placeSticky,{threshold:[0,.1,.5,1]}).observe(el);});placeSticky();}
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 	else init();
 })();

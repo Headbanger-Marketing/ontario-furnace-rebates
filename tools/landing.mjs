@@ -1,8 +1,8 @@
 // Restore the original landing-page hierarchy around the reviewed program content.
-// Keep the calculator and contact handlers unchanged; these are real interactive forms.
+// Preserve the interactive calculator placement and landing sections.
 const HRS='https://www.homerenovationsavings.ca/without-assessment/heat-pumps';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const CALC='<div id="rebate-checker" class="hpro-calc-mount" data-hpro-calc></div>';
+const CALC='<div id="rebate-checker" class="hpro-calc-mount" data-hpro-calc></div><noscript><p>Enable JavaScript for the checker, or <a href="/rebates/home-renovation-savings-program/">review the published rates</a>. For a project enquiry, email <a href="mailto:contact@ontariofurnacerebates.ca">contact@ontariofurnacerebates.ca</a>.</p></noscript>';
 const CHECKED='<p class="hpro-verified">Program sources checked October 4, 2026. Confirm current terms with the program administrator before ordering equipment.</p>';
 const CITIES=[['toronto','Toronto'],['ottawa','Ottawa'],['mississauga','Mississauga'],['hamilton','Hamilton'],['london','London'],['brampton','Brampton'],['kitchener-waterloo','Kitchener-Waterloo'],['windsor','Windsor'],['barrie','Barrie'],['kingston','Kingston']];
 const DATA={
