@@ -42,7 +42,7 @@ const CONTACT_FORM = `<form id="hpro-contact-form" class="hpro-contact" novalida
 	<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
 	<label class="hpro-consent"><input type="checkbox" name="consent" required> <span>I agree to be contacted about my request.</span></label>
 	<p class="err" id="hpro-contact-error" role="alert" tabindex="-1" hidden></p>
-	<p>Your enquiry goes to Jayden&#39;s Mechanical for review. An appointment requires confirmation.</p>
+	<p>Your enquiry goes to the service team for review. An appointment requires confirmation.</p>
 	<button class="hpro-btn" type="submit" disabled>Send message</button>
 	<noscript><p>Enable JavaScript to send this form, or email <a href="mailto:contact@ontariofurnacerebates.ca">contact@ontariofurnacerebates.ca</a>.</p></noscript>
 </form>`;
@@ -200,7 +200,7 @@ ${page.body}
 </article>
 ${footerHTML()}
 <script src="/assets/js/hpro-config.js"></script>
-<script src="/assets/js/calculator.js?v=20261014-form-cleanup" defer></script>
+<script src="/assets/js/calculator.js?v=20261014-neutral-service" defer></script>
 <script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261013-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
 ${scripts}
 </body>

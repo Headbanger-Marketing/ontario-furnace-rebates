@@ -257,7 +257,7 @@
 				'</div>' +
 				'<form method="post" class="lead" data-enquiry-form novalidate>' +
 					'<h3>Request a project review</h3>' +
-					'<p class="sub">Your enquiry goes to Jayden&#39;s Mechanical for project review. A participating contractor must confirm eligibility and availability.</p>' +
+					'<p class="sub">Your enquiry goes to the service team for project review. A participating contractor must confirm eligibility and availability.</p>' +
 					'<div class="form">' +
 						'<label class="flbl"><span>First name (required)</span><input required class="field lc" name="name" placeholder="Jordan" autocomplete="given-name"></label>' +
 						'' + '<div class="row2">' +
@@ -346,7 +346,7 @@
 			'<div class="reveal"><div class="result-card done-card">' +
 				'<div class="big-ic">' + I.check(34, 2.4) + '</div>' +
 				'<h3>Enquiry received.</h3>' +
-				'<p>Your enquiry was received for review by Jayden&#39;s Mechanical. It is not a program application or funding approval. ' + (channel === 'phone' ? 'Watch for a phone call using the number you provided.' : 'Check the email address you provided for follow-up.') + '</p>' +
+				'<p>Your enquiry was received for review by the service team. It is not a program application or funding approval. ' + (channel === 'phone' ? 'Watch for a phone call using the number you provided.' : 'Check the email address you provided for follow-up.') + '</p>' +
 				'<button type="button" class="restart">' + I.arrowL(14) + ' Start over</button>' +
 			'</div></div>';
 		focusHeading(this.root);var self = this;
