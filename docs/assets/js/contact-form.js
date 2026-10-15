@@ -33,7 +33,7 @@
 
 		err.hidden=true;sending=true;if(btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
-		var msg=f.message.value.trim()+'\nContact preference: '+form.querySelector('[name=contact_method]:checked').value+'\nConsent: Headbanger Marketing and Jaydens Mechanical follow-up';
+		var msg=f.message.value.trim()+'\nConsent: enquiry follow-up agreed';
 		var u = utms(), camp = [];
 		['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) { if (u[k]) camp.push(k + '=' + u[k]); });
 		if (camp.length) msg += '\n\n, Campaign: ' + camp.join(' ');

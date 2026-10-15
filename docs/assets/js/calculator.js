@@ -90,15 +90,16 @@
 	}
 	function bindContact(form) {
 		var channels=form.querySelectorAll('[name=contact_method]');
-		function sync(){var selected=form.querySelector('[name=contact_method]:checked').value;
-			['email','phone'].forEach(function(k){var el=form.querySelector('[name='+k+']');el.required=k===selected;el.disabled=k!==selected;el.closest('label,.hpro-field').hidden=k!==selected;});}
+		function sync(){var selected=(form.querySelector('[name=contact_method]:checked')||{value:'email'}).value;
+			['email','phone'].forEach(function(k){var el=form.querySelector('[name='+k+']');var choosing=channels.length>0;el.required=choosing?k===selected:k==='email';el.disabled=choosing&&k!==selected;el.closest('label,.hpro-field').hidden=choosing&&k!==selected;});}
 		channels.forEach(function(el){el.addEventListener('change',sync);});sync();
 	}
 	function validate(form) {
-		var name=form.querySelector('[name=name]'),method=form.querySelector('[name=contact_method]:checked').value,contact=form.querySelector('[name='+method+']'),consent=form.querySelector('[name=consent]');
+		var name=form.querySelector('[name=name]'),method=(form.querySelector('[name=contact_method]:checked')||{value:'email'}).value,contact=form.querySelector('[name='+method+']'),consent=form.querySelector('[name=consent]');
 		if(!name.value.trim()){announce(form,'Please enter your first name.',name);return false;}
 		var valid=method==='email'?/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact.value.trim()):contact.value.replace(/\D/g,'').length>=10;
 		if(!valid){announce(form,method==='email'?'Enter a valid email address.':'Enter a phone number with at least 10 digits.',contact);return false;}
+		var phone=form.querySelector('[name=phone]');if(!form.querySelector('[name=contact_method]')&&phone.value.trim()&&!/^[+()\d\s.\-]{10,40}$/.test(phone.value.trim())){announce(form,'Enter a valid phone number or leave this blank.',phone);return false;}
 		if(consent&&!consent.checked){announce(form,'Please agree to share this enquiry for follow-up.',consent);return false;}
 		return true;
 	}
@@ -259,12 +260,12 @@
 					'<p class="sub">Your enquiry goes to Jayden&#39;s Mechanical for project review. A participating contractor must confirm eligibility and availability.</p>' +
 					'<div class="form">' +
 						'<label class="flbl"><span>First name (required)</span><input required class="field lc" name="name" placeholder="Jordan" autocomplete="given-name"></label>' +
-						'<fieldset class="contact-choice"><legend>How should the team contact you?</legend><label><input type="radio" name="contact_method" value="email" checked> Email</label><label><input type="radio" name="contact_method" value="phone"> Phone call</label></fieldset>' + '<div class="row2">' +
-							'<label class="flbl"><span>Email (required when selected)</span><input class="field lc" name="email" type="email" placeholder="you@email.com" autocomplete="email"></label>' +
-							'<label class="flbl"><span>Phone (required when selected)</span><input class="field lc" name="phone" type="tel" placeholder="(416) 555-0123" autocomplete="tel"></label>' +
+						'' + '<div class="row2">' +
+							'<label class="flbl"><span>Email (required)</span><input class="field lc" name="email" type="email" placeholder="you@email.com" autocomplete="email"></label>' +
+							'<label class="flbl"><span>Phone (optional)</span><input class="field lc" name="phone" type="tel" placeholder="(416) 555-0123" autocomplete="tel"></label>' +
 						'</div>' +
 						'<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>' +
-					'<label class="consent consent-check"><input type="checkbox" name="consent" required> <span>I agree to share this enquiry with Headbanger Marketing and Jayden&#39;s Mechanical for follow-up. Service availability, appointments and program approval require confirmation. <a href="/privacy-policy/">Privacy</a>.</span></label>' +
+					'<label class="consent consent-check"><input type="checkbox" name="consent" required> <span>I agree to be contacted about my request. <a href="/privacy-policy/">Privacy</a>.</span></label>' +
 						'<button class="btn big full" type="submit" disabled>Request Review ' + I.arrow(18) + '</button>' +
 					'</div>' +
 					'<div class="reassure-row"><span class="r">' + I.check(14) + ' Free</span><span class="r">' + I.shield(14) + ' No obligation</span><span class="r">' + I.noSell(14) + ' Provider follow-up</span></div>' +
@@ -298,7 +299,7 @@
 			if(form.querySelector('[name=company_website]').value){sending=false;btn.disabled=false;announce(form,'Your enquiry could not be confirmed.');return;}
 
 			var name = fields.name.value.trim();
-            var submittedChannel = form.querySelector('[name=contact_method]:checked').value;
+            var submittedChannel = (form.querySelector('[name=contact_method]:checked')||{value:'email'}).value;
 			var msgLines = [
 				'HVAC rebate calculator lead',
 				'Fuel type: ' + labelOf(HEAT, self.ans.heat),
@@ -306,7 +307,7 @@
                 'Existing space-heating heat pump: ' + labelOf(EXISTING, self.ans.existing),
 				'System interest: ' + labelOf(SYS, self.ans.system),
 				'Purchased heat pump cap: ' + (r.qualified ? fmt(r.high) : r.comparison ? 'Air-source up to '+fmt(r.airMax)+', ground-source up to '+fmt(r.geoMax) : r.existing === 'yes' ? 'Existing replacement excluded' : 'Eligibility review required'),
-				'Lead priority: ' + r.priority, 'Contact preference: '+form.querySelector('[name=contact_method]:checked').value,'Consent: Headbanger Marketing and Jaydens Mechanical follow-up'
+				'Lead priority: ' + r.priority, 'Consent: enquiry follow-up agreed'
 			];
 			var u = utms(), camp = [];
 			['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) { if (u[k]) camp.push(k + '=' + u[k]); });
