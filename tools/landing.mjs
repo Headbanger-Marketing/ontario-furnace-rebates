@@ -7,7 +7,8 @@ const CHECKED='<p class="hpro-verified">Program sources checked October 4, 2026.
 const CITIES=[['toronto','Toronto'],['ottawa','Ottawa'],['mississauga','Mississauga'],['hamilton','Hamilton'],['london','London'],['brampton','Brampton'],['kitchener-waterloo','Kitchener-Waterloo'],['windsor','Windsor'],['barrie','Barrie'],['kingston','Kingston']];
 const DATA={
  heat:{
-  headline:'Heat pump rebates in Ontario.',
+  headline:'Heat Pump Rebate Ontario',
+  subtitle:'Heat Pump Rebate Guidance in Ontario',
   intro:'Find the published rebate cap for your home, then take the next step with a project review.',
   cityPrefix:'heat-pump-rebate-',
   cityHeadline:city=>`Heat pump rebates in ${city}.`,
@@ -22,7 +23,8 @@ const DATA={
   guideText:'Use your existing heating source to check the cap, then discuss the complete project with a participating contractor.'
  },
  furnace:{
-  headline:'Replacing your furnace?',
+  headline:'Ontario Furnace Rebates',
+  subtitle:'Furnace & Heat Pump Guidance in Ontario',
   intro:'Compare furnace and heat pump options. HRS funds qualifying heat pumps, not a standalone furnace replacement.',
   cityPrefix:'furnace-rebate-',
   cityHeadline:city=>`Replacing a furnace in ${city}?`,
@@ -37,9 +39,9 @@ const DATA={
   guideText:'Check the heat pump cap separately from the furnace price. An itemized quote makes the decision clearer.'
  }
 };
-function hero(headline,intro){
+function hero(headline,intro,subtitle=''){
  return `<section class="hpro-section landing-hero"><div class="hpro-wrap"><div class="hpro-ui"><div class="hero hpro-hero-visual">
- <div class="hero-copy"><h1 class="headline">${esc(headline)}</h1><p class="subhead">${esc(intro)}</p><a class="hpro-btn hero-action" href="#rebate-checker">Check My Rebate <span aria-hidden="true">↗</span></a></div>
+ <div class="hero-copy"><h1 class="headline">${esc(headline)}</h1>${subtitle?`<span class="eyebrow">${esc(subtitle)}</span>`:''}<p class="subhead">${esc(intro)}</p><a class="hpro-btn hero-action" href="#rebate-checker">Check My Rebate <span aria-hidden="true">↗</span></a></div>
  <div class="hero-checker">${CALC}</div></div></div></div></section>`;
 }
 function reassurance(){
@@ -76,7 +78,7 @@ export function applyLandingDesign(page,{kind}){
  const data=DATA[kind];
  if(page.url==='/'){
   page.bodyClass='landing-page';
-  page.body=hero(data.headline,data.intro)+reassurance()+(kind==='heat'?amounts():furnaceChoices())+steps(data,kind)+faq(data)+cityLinks(data)+finalCta(data,true);
+  page.body=hero(data.headline,data.intro,data.subtitle)+reassurance()+(kind==='heat'?amounts():furnaceChoices())+steps(data,kind)+faq(data)+cityLinks(data)+finalCta(data,true);
  }else if(page.url==='/rebate-calculator/'){
   page.bodyClass='landing-page checker-page';
   const detail=page.body.replace(/<h1>[^]*?<\/h1>/,'').replace(/<div class="hpro-calc-mount" data-hpro-calc><\/div>/,'');
