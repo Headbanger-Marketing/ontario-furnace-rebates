@@ -6,6 +6,7 @@ import { copyFileSync, writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { buildContent } from './content.mjs';
 import { applyLandingDesign } from './landing.mjs';
+import { faqSchemaForPage } from './faq.mjs';
 
 const DOCS = fileURLToPath(new URL('../docs', import.meta.url));
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -222,6 +223,7 @@ const pages = buildContent({ brand: BRAND, contactForm: CONTACT_FORM });
 for (const p of pages) {
  applyLandingDesign(p,{kind:'furnace'});
  p.schema = [
+  ...faqSchemaForPage(p, BASE),
   p.url === '/' ? websiteSchema() : breadcrumb([{ name: 'Home', url: BASE + '/' }, { name: p.title.split(' | ')[0], url: BASE + p.url }]),
   ...(p.url === '/about/' ? [{ '@context': 'https://schema.org', '@type': 'AboutPage', name: p.title, url: BASE + p.url, mainEntity: { '@id': BASE + '/#org' } }] : []),
   ...(p.url === '/hrs-2026-update/' ? [{ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.title, datePublished: '2026-06-06', dateModified: LASTMOD, author: { '@id': BASE + '/#org' }, publisher: { '@id': BASE + '/#org' }, mainEntityOfPage: BASE + p.url }] : []),
