@@ -24,6 +24,10 @@
 			name: form.querySelector('[name=name]'),
 			email: form.querySelector('[name=email]'),
 			phone: form.querySelector('[name=phone]'),
+			address: form.querySelector('[name=address]'),
+			city: form.querySelector('[name=city]'),
+			postal: form.querySelector('[name=postal]'),
+			service: form.querySelector('[name=service]'),
 			message: form.querySelector('[name=message]'),
 			consent: form.querySelector('[name=consent]')
 		};
@@ -33,22 +37,22 @@
 
 		err.hidden=true;sending=true;if(btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
-		var msg=f.message.value.trim()+'\nConsent: enquiry follow-up agreed';
+		var msg=(f.service.value?'Work to discuss: '+f.service.options[f.service.selectedIndex].text+'\n':'')+f.message.value.trim()+'\nConsent: enquiry follow-up agreed';
 		var u = utms(), camp = [];
 		['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) { if (u[k]) camp.push(k + '=' + u[k]); });
 		if (camp.length) msg += '\n\n, Campaign: ' + camp.join(' ');
 
 		// Gravity Forms-style body: the shared n8n "hvac-sites" webhook reads these
 		// exact field-ID keys (1.3 name, 2 email, 3 message, 4 phone, source_url,
-		// date_created). Contact form has no address, so 5.x stay blank.
+		// date_created), including the restored address fields.
 		var params = new URLSearchParams();
 		params.set('1.3', f.name.value.trim());
 		params.set('2',f.email.disabled?'':f.email.value.trim());
 		params.set('3', msg);
 		params.set('4',f.phone.disabled?'':f.phone.value.trim());
-		params.set('5.1', '');
-		params.set('5.3', '');
-		params.set('5.5', '');
+		params.set('5.1', f.address.value.trim());
+		params.set('5.3', f.city.value.trim());
+		params.set('5.5', f.postal.value.trim().toUpperCase());
 		params.set('source_url', location.href);
 		params.set('date_created', gfDate());
 
@@ -57,7 +61,7 @@
 			window.dataLayer.push({ event: 'lead_submit', lead_priority: 'standard', source_form: 'contact' });
 			location.href = '/thank-you/';
 		}).catch(function () {
-			sending=false;if(btn){btn.disabled=false;btn.textContent='Send message';}
+			sending=false;if(btn){btn.disabled=false;btn.textContent='Request My Free Quote';}
 			intake.announce(form,'We could not confirm receipt. Your details are still here. The request may already have arrived; check for follow-up before sending again.');
 		});
 	});

@@ -91,15 +91,20 @@
 	function bindContact(form) {
 		var channels=form.querySelectorAll('[name=contact_method]');
 		function sync(){var selected=(form.querySelector('[name=contact_method]:checked')||{value:'email'}).value;
-			['email','phone'].forEach(function(k){var el=form.querySelector('[name='+k+']');var choosing=channels.length>0;el.required=choosing?k===selected:k==='email';el.disabled=choosing&&k!==selected;el.closest('label,.hpro-field').hidden=choosing&&k!==selected;});}
+			['email','phone'].forEach(function(k){var el=form.querySelector('[name='+k+']');var choosing=channels.length>0;if(choosing)el.required=k===selected;el.disabled=choosing&&k!==selected;el.closest('label,.hpro-field').hidden=choosing&&k!==selected;});}
 		channels.forEach(function(el){el.addEventListener('change',sync);});sync();
 	}
 	function validate(form) {
-		var name=form.querySelector('[name=name]'),method=(form.querySelector('[name=contact_method]:checked')||{value:'email'}).value,contact=form.querySelector('[name='+method+']'),consent=form.querySelector('[name=consent]');
-		if(!name.value.trim()){announce(form,'Please enter your first name.',name);return false;}
-		var valid=method==='email'?/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact.value.trim()):contact.value.replace(/\D/g,'').length>=10;
-		if(!valid){announce(form,method==='email'?'Enter a valid email address.':'Enter a phone number with at least 10 digits.',contact);return false;}
-		var phone=form.querySelector('[name=phone]');if(!form.querySelector('[name=contact_method]')&&phone.value.trim()&&!/^[+()\d\s.\-]{10,40}$/.test(phone.value.trim())){announce(form,'Enter a valid phone number or leave this blank.',phone);return false;}
+		var fields={},consent=form.querySelector('[name=consent]');
+		['name','phone','email','city','postal','message'].forEach(function(k){fields[k]=form.querySelector('[name='+k+']');});
+		if(!fields.name.value.trim()){announce(form,'Please enter your full name.',fields.name);return false;}
+		var phone=fields.phone.value.trim();
+		if(!/^[+()\d\s.\-]{10,40}$/.test(phone)||phone.replace(/\D/g,'').length<10){announce(form,'Enter a phone number with at least 10 digits.',fields.phone);return false;}
+		if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(fields.email.value.trim())){announce(form,'Enter a valid email address.',fields.email);return false;}
+		if(!fields.city.value.trim()){announce(form,'Please enter your city.',fields.city);return false;}
+		var postal=fields.postal.value.trim().toUpperCase(),validPostal=form.matches('.lead')?ontarioPostal(postal):/^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$/.test(postal);
+		if(!validPostal){announce(form,form.matches('.lead')?'Enter a valid Ontario postal code, such as N6A 1A1.':'Enter a valid Canadian postal code, such as N1A 1A1.',fields.postal);return false;}
+		if(!fields.message.value.trim()){announce(form,'Please briefly describe your issue.',fields.message);return false;}
 		if(consent&&!consent.checked){announce(form,'Please agree to share this enquiry for follow-up.',consent);return false;}
 		return true;
 	}
@@ -255,18 +260,26 @@
 					'<p class="r-reassure">Based on a <b>' + r.label.toLowerCase() + '</b>-heated' + geoTxt + ' home in Ontario. ' + (r.existing === 'yes' ? 'This HRS measure does not fund replacement of an existing space-heating heat pump. You can still request equipment planning; no funding is promised.' : r.existing !== 'no' ? 'Ask a contractor to identify your existing heating equipment before relying on a cap. Accessible equipment labels can help; do not remove covers.' : 'You indicated no existing space-heating heat pump. Equipment, rated capacity, property eligibility and pre-installation approval require participating-contractor review. These are published caps, not approval.') + (self.ans.heat === 'not-sure' ? ' Identify the current heating source from an accessible equipment label or ask the contractor to check it.' : '') + '</p>' +
 					standout +
 				'</div>' +
-				'<form method="post" class="lead" data-enquiry-form novalidate>' +
-					'<h3>Request a project review</h3>' +
+				'<form method="post" class="lead" data-enquiry-form data-quote-contract="2026-10-15" novalidate>' +
+					'<h3 data-quote-heading>Get a Free Quote</h3>' +
+					'<p class="sub" data-quote-support>' + (this.root.dataset.quoteSupport || 'Tell us about your furnace or heat pump issue.') + '</p>' +
 					'<p class="sub">Your enquiry goes to the service team for project review. A participating contractor must confirm eligibility and availability.</p>' +
 					'<div class="form">' +
-						'<label class="flbl"><span>First name (required)</span><input required class="field lc" name="name" placeholder="Jordan" autocomplete="given-name"></label>' +
-						'' + '<div class="row2">' +
-							'<label class="flbl"><span>Email (required)</span><input class="field lc" name="email" type="email" placeholder="you@email.com" autocomplete="email"></label>' +
-							'<label class="flbl"><span>Phone (optional)</span><input class="field lc" name="phone" type="tel" placeholder="(416) 555-0123" autocomplete="tel"></label>' +
+						'<label class="flbl"><span>Full Name <span aria-hidden="true">*</span></span><input required class="field lc" name="name" type="text" data-quote-field="name" placeholder="Jane Doe" autocomplete="name"></label>' +
+						'<div class="row2">' +
+							'<label class="flbl"><span>Phone <span aria-hidden="true">*</span></span><input required class="field lc" name="phone" type="tel" data-quote-field="phone" placeholder="(905) 000-0000" autocomplete="tel"></label>' +
+							'<label class="flbl"><span>Email <span aria-hidden="true">*</span></span><input required class="field lc" name="email" type="email" data-quote-field="email" placeholder="you@email.com" autocomplete="email"></label>' +
 						'</div>' +
+						'<label class="flbl"><span>Street Address</span><input class="field lc" name="address" type="text" data-quote-field="address" placeholder="123 Main St" autocomplete="street-address"></label>' +
+						'<div class="row2">' +
+							'<label class="flbl"><span>City <span aria-hidden="true">*</span></span><input required class="field lc" name="city" type="text" data-quote-field="city" placeholder="' + (this.root.dataset.quoteCity || 'Your Ontario city') + '" autocomplete="address-level2"></label>' +
+							'<label class="flbl"><span>Postal Code <span aria-hidden="true">*</span></span><input required class="field lc" name="postal" type="text" data-quote-field="postal" placeholder="N1A 1A1" autocomplete="postal-code" value="' + this.ans.postal + '"></label>' +
+						'</div>' +
+						'<label class="flbl"><span>Work to discuss</span><select class="field lc" name="service" data-quote-field="service"><option value="">Choose the work</option><option value="furnace-repair">Furnace repair</option><option value="furnace-replacement">Furnace replacement</option><option value="heat-pump-installation">Heat pump installation</option><option value="hybrid-system">Furnace and heat pump system</option><option value="not-sure">Not sure yet</option></select></label>' +
+						'<label class="flbl"><span>Briefly describe your issue <span aria-hidden="true">*</span></span><textarea required class="field lc" name="message" data-quote-field="message" rows="4" placeholder="e.g. My furnace won’t turn on…"></textarea></label>' +
 						'<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>' +
 					'<label class="consent consent-check"><input type="checkbox" name="consent" required> <span>I agree to be contacted about my request. <a href="/privacy-policy/">Privacy</a>.</span></label>' +
-						'<button class="btn big full" type="submit" disabled>Request Review ' + I.arrow(18) + '</button>' +
+						'<button class="btn big full" type="submit" disabled>Request My Free Quote ' + I.arrow(18) + '</button>' +
 					'</div>' +
 					'<div class="reassure-row"><span class="r">' + I.check(14) + ' Free</span><span class="r">' + I.shield(14) + ' No obligation</span><span class="r">' + I.noSell(14) + ' Provider follow-up</span></div>' +
 					'<p class="err" id="hpro-lead-error" role="alert" tabindex="-1" hidden></p>' +
@@ -284,7 +297,7 @@
 		var self = this, form = this.root.querySelector('.lead');
 		var btn = form.querySelector('button[type="submit"]');
 		var err = form.querySelector('.err');
-		var fields = { name: form.querySelector('[name=name]'), email: form.querySelector('[name=email]'), phone: form.querySelector('[name=phone]') };
+		var fields = {}; ['name','phone','email','address','city','postal','service','message'].forEach(function(k){fields[k]=form.querySelector('[name='+k+']');});
 
 		bindContact(form); var sending=false;
 
@@ -309,6 +322,8 @@
 				'Purchased heat pump cap: ' + (r.qualified ? fmt(r.high) : r.comparison ? 'Air-source up to '+fmt(r.airMax)+', ground-source up to '+fmt(r.geoMax) : r.existing === 'yes' ? 'Existing replacement excluded' : 'Eligibility review required'),
 				'Lead priority: ' + r.priority, 'Consent: enquiry follow-up agreed'
 			];
+			if(fields.service.value)msgLines.push('Work to discuss: '+fields.service.options[fields.service.selectedIndex].text);
+			msgLines.push('Issue: '+fields.message.value.trim());
 			var u = utms(), camp = [];
 			['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) { if (u[k]) camp.push(k + '=' + u[k]); });
 			if (camp.length) msgLines.push('Campaign: ' + camp.join(' '));
@@ -323,9 +338,9 @@
 			params.set('2',fields.email.disabled?'':fields.email.value.trim());
 			params.set('3', msgLines.join('\n'));
 			params.set('4',fields.phone.disabled?'':fields.phone.value.trim());
-			params.set('5.1', '');
-			params.set('5.3', '');
-			params.set('5.5', self.ans.postal || '');
+			params.set('5.1', fields.address.value.trim());
+			params.set('5.3', fields.city.value.trim());
+			params.set('5.5', fields.postal.value.trim().toUpperCase());
 			params.set('source_url', location.href);
 			params.set('date_created', gfDate());
 
@@ -333,7 +348,7 @@
 				dl('lead_submit', { lead_priority: r.priority, fuel_type: self.ans.heat, system_type: self.ans.system });
 				self.done(name, submittedChannel);
 			}).catch(function () {
-				sending=false;btn.disabled=false;btn.innerHTML='Request Review '+I.arrow(18);
+				sending=false;btn.disabled=false;btn.innerHTML='Request My Free Quote '+I.arrow(18);
 				announce(form,'We could not confirm receipt. Your details are still here. The request may already have arrived; check for follow-up before sending again.');
 			});
 		});

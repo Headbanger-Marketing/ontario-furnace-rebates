@@ -421,12 +421,12 @@ html, body { overflow-x: hidden; }
 .hpro-contact .hpro-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .hpro-field { display: flex; flex-direction: column; gap: .4rem; }
 .hpro-field label { font-size: .85rem; font-weight: 650; color: var(--ink-soft); }
-.hpro-contact input, .hpro-contact textarea {
+.hpro-contact input, .hpro-contact textarea, .hpro-contact select {
   width: 100%; font-family: inherit; font-size: 1rem; color: var(--ink);
   background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: .8rem .9rem;
   transition: border-color .16s ease, box-shadow .16s ease;
 }
-.hpro-contact input:focus, .hpro-contact textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-tint); }
+.hpro-contact input:focus, .hpro-contact textarea:focus, .hpro-contact select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-tint); }
 .hpro-contact .hpro-consent { display: flex; align-items: flex-start; gap: .6rem; font-size: .9rem; color: var(--muted); line-height: 1.45; }
 .hpro-contact .hpro-consent input { width: auto; margin-top: .2rem; flex: none; }
 .hpro-contact .err { color: #b3261e; font-size: .9rem; margin: 0; }
@@ -576,3 +576,13 @@ body { margin: 0; }
 .hpro-ui .r-options{font-size:clamp(1.25rem,4vw,1.7rem);line-height:1.4}.hpro-ui .r-options p{margin:.3em 0}
 
 .hpro-ui .r-amount--status{font-size:clamp(1.25rem,4vw,1.7rem);line-height:1.4;white-space:normal;overflow-wrap:anywhere}.hpro-ui .r-options{white-space:normal}
+
+/* October 15: approved quote form presentation; checker layout stays unchanged. */
+.hpro-contact [data-quote-heading]{margin:0;font-size:clamp(1.4rem,2vw,1.65rem);line-height:1.2}
+.hpro-contact .hpro-form-support{margin:0;color:var(--muted);line-height:1.5}
+.hpro-contact select,.hpro-ui .lead .field{box-sizing:border-box;min-width:0;font-size:16px}
+.hpro-contact .hpro-field,.hpro-ui .lead .flbl{min-width:0}
+.hpro-contact textarea,.hpro-ui .lead textarea{min-height:100px;resize:vertical}
+.hpro-contact [data-quote-field="postal"],.hpro-ui .lead [data-quote-field="postal"]{text-transform:uppercase}
+
+.hpro-contact button[type="submit"]{text-transform:none}

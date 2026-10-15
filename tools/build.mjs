@@ -32,19 +32,26 @@ const ICONS = {
 const icon = (name, s = 16, w = 1.9) =>
 	`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ''}</svg>`;
 
-const CONTACT_FORM = `<form id="hpro-contact-form" class="hpro-contact" novalidate>
-	<div class="hpro-field"><label for="cf-name">First name (required)</label><input id="cf-name" name="name" autocomplete="given-name" required></div>
-
+const CONTACT_FORM = `<form id="hpro-contact-form" class="hpro-contact" data-quote-contract="2026-10-15" novalidate>
+	<h2 data-quote-heading>Get a Free Quote</h2>
+	<p class="hpro-form-support" data-quote-support>Tell us about your furnace issue.</p>
+	<div class="hpro-field"><label for="cf-name">Full Name <span aria-hidden="true">*</span></label><input id="cf-name" name="name" type="text" data-quote-field="name" autocomplete="name" placeholder="Jane Doe" required></div>
 	<div class="hpro-row2">
-		<div class="hpro-field"><label for="cf-email">Email (required)</label><input id="cf-email" name="email" type="email" autocomplete="email"></div>
-		<div class="hpro-field"><label for="cf-phone">Phone (optional)</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel"></div>
+		<div class="hpro-field"><label for="cf-phone">Phone <span aria-hidden="true">*</span></label><input id="cf-phone" name="phone" type="tel" data-quote-field="phone" autocomplete="tel" placeholder="(905) 000-0000" required></div>
+		<div class="hpro-field"><label for="cf-email">Email <span aria-hidden="true">*</span></label><input id="cf-email" name="email" type="email" data-quote-field="email" autocomplete="email" placeholder="you@email.com" required></div>
 	</div>
-	<div class="hpro-field"><label for="cf-msg">Message</label><textarea id="cf-msg" name="message" rows="4"></textarea></div>
+	<div class="hpro-field"><label for="cf-address">Street Address</label><input id="cf-address" name="address" type="text" data-quote-field="address" autocomplete="street-address" placeholder="123 Main St"></div>
+	<div class="hpro-row2">
+		<div class="hpro-field"><label for="cf-city">City <span aria-hidden="true">*</span></label><input id="cf-city" name="city" type="text" data-quote-field="city" autocomplete="address-level2" placeholder="Your Ontario city" required></div>
+		<div class="hpro-field"><label for="cf-postal">Postal Code <span aria-hidden="true">*</span></label><input id="cf-postal" name="postal" type="text" data-quote-field="postal" autocomplete="postal-code" placeholder="N1A 1A1" required></div>
+	</div>
+	<div class="hpro-field"><label for="cf-service">Work to discuss</label><select id="cf-service" name="service" data-quote-field="service"><option value="">Choose the work</option><option value="furnace-repair">Furnace repair</option><option value="furnace-replacement">Furnace replacement</option><option value="heat-pump-installation">Heat pump installation</option><option value="hybrid-system">Furnace and heat pump system</option><option value="not-sure">Not sure yet</option></select></div>
+	<div class="hpro-field"><label for="cf-msg">Briefly describe your issue <span aria-hidden="true">*</span></label><textarea id="cf-msg" name="message" data-quote-field="message" rows="4" placeholder="e.g. My furnace won’t turn on…" required></textarea></div>
 	<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
 	<label class="hpro-consent"><input type="checkbox" name="consent" required> <span>I agree to be contacted about my request.</span></label>
 	<p class="err" id="hpro-contact-error" role="alert" tabindex="-1" hidden></p>
 	<p>Your enquiry goes to the service team for review. An appointment requires confirmation.</p>
-	<button class="hpro-btn" type="submit" disabled>Send message</button>
+	<button class="hpro-btn" type="submit" disabled>Request My Free Quote</button>
 	<noscript><p>Enable JavaScript to send this form, or email <a href="mailto:contact@ontariofurnacerebates.ca">contact@ontariofurnacerebates.ca</a>.</p></noscript>
 </form>`;
 
@@ -161,6 +168,11 @@ function ldScript(obj) {
 /* -------------------------------------------------------------------- layout */
 function layout(page) {
 	const url = page.url;
+	const quoteCities = {"toronto":"Toronto","ottawa":"Ottawa","mississauga":"Mississauga","hamilton":"Hamilton","london":"London","brampton":"Brampton","kitchener-waterloo":"Kitchener-Waterloo","windsor":"Windsor","barrie":"Barrie","kingston":"Kingston"};
+	const quoteCitySlug = url.startsWith('/furnace-rebate-') ? url.slice(16).replace(/\/$/, '') : '';
+	const quoteCity = quoteCities[quoteCitySlug] || 'Your Ontario city';
+	const quoteSupport = url === '/' ? 'No obligation. Fast response. Honest pricing.' : 'Tell us about your furnace or heat pump issue.';
+	const body = page.body.replace(/\bdata-hpro-calc(?=[\s>])/g, `data-hpro-calc data-quote-city="${esc(quoteCity)}" data-quote-support="${esc(quoteSupport)}"`);
 	const canonical = BASE + (url === '/' ? '/' : url);
 	const robots = page.noindex ? '<meta name="robots" content="noindex, follow" />\n\t' : '';
 	const schema = [ORG, ...(page.schema || [])].map(ldScript).join('\n\t');
@@ -189,19 +201,19 @@ function layout(page) {
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" />
-	<link rel="stylesheet" href="/assets/css/style.css?v=20261013-audit2" />
+	<link rel="stylesheet" href="/assets/css/style.css?v=20261015-form-restoration" />
 	${schema}
 </head>
 <body class="${page.bodyClass || ''}">
 ${headerHTML(url)}
 <article class="hpro-page">
 	<div class="entry-content">
-${page.body}
+${body}
 	</div>
 </article>
 ${footerHTML()}
 <script src="/assets/js/hpro-config.js"></script>
-<script src="/assets/js/calculator.js?v=20261014-neutral-service" defer></script>
+<script src="/assets/js/calculator.js?v=20261015-form-restoration" defer></script>
 <script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261013-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
 ${scripts}
 </body>

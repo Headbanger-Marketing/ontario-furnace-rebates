@@ -22,7 +22,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" />
-	<link rel="stylesheet" href="/assets/css/style.css?v=20261013-audit2" />
+	<link rel="stylesheet" href="/assets/css/style.css?v=20261015-form-restoration" />
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":["Organization","ProfessionalService"],"@id":"https://ontariofurnacerebates.ca/#org","name":"Ontario Furnace Rebates","url":"https://ontariofurnacerebates.ca/","logo":"https://ontariofurnacerebates.ca/assets/img/logo-horizontal.svg","description":"Ontario Furnace Rebates is an independent information and inquiry website for Ontario homeowners planning furnace and hybrid quote review.","areaServed":{"@type":"State","name":"Ontario","containedInPlace":{"@type":"Country","name":"Canada"}},"knowsAbout":["Ontario furnace rebates","Ontario HVAC rebates","Home Renovation Savings Program","Oil to Heat Pump Affordability","Canada Greener Homes Loan","furnace and AC rebate eligibility"],"priceRange":"Free"}</script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ontariofurnacerebates.ca/"},{"@type":"ListItem","position":2,"name":"Send a furnace or hybrid quote question","item":"https://ontariofurnacerebates.ca/contact/"}]}</script>
 </head>
@@ -45,19 +45,26 @@
 <main id="content" class="site-main">
 <article class="hpro-page">
 	<div class="entry-content">
-<section class="hpro-section"><div class="hpro-wrap hpro-prose" style="max-width:900px"><h1>Send a furnace or hybrid quote question</h1><p>Include whether you need a furnace repair, a furnace-only replacement, or a heat pump paired with a furnace. If a quote deducts a rebate, tell us the program name and which equipment appears on that line. Remove account numbers and personal documents before sharing details.</p><form id="hpro-contact-form" class="hpro-contact" novalidate>
-	<div class="hpro-field"><label for="cf-name">First name (required)</label><input id="cf-name" name="name" autocomplete="given-name" required></div>
-
+<section class="hpro-section"><div class="hpro-wrap hpro-prose" style="max-width:900px"><h1>Send a furnace or hybrid quote question</h1><p>Include whether you need a furnace repair, a furnace-only replacement, or a heat pump paired with a furnace. If a quote deducts a rebate, tell us the program name and which equipment appears on that line. Remove account numbers and personal documents before sharing details.</p><form id="hpro-contact-form" class="hpro-contact" data-quote-contract="2026-10-15" novalidate>
+	<h2 data-quote-heading>Get a Free Quote</h2>
+	<p class="hpro-form-support" data-quote-support>Tell us about your furnace issue.</p>
+	<div class="hpro-field"><label for="cf-name">Full Name <span aria-hidden="true">*</span></label><input id="cf-name" name="name" type="text" data-quote-field="name" autocomplete="name" placeholder="Jane Doe" required></div>
 	<div class="hpro-row2">
-		<div class="hpro-field"><label for="cf-email">Email (required)</label><input id="cf-email" name="email" type="email" autocomplete="email"></div>
-		<div class="hpro-field"><label for="cf-phone">Phone (optional)</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel"></div>
+		<div class="hpro-field"><label for="cf-phone">Phone <span aria-hidden="true">*</span></label><input id="cf-phone" name="phone" type="tel" data-quote-field="phone" autocomplete="tel" placeholder="(905) 000-0000" required></div>
+		<div class="hpro-field"><label for="cf-email">Email <span aria-hidden="true">*</span></label><input id="cf-email" name="email" type="email" data-quote-field="email" autocomplete="email" placeholder="you@email.com" required></div>
 	</div>
-	<div class="hpro-field"><label for="cf-msg">Message</label><textarea id="cf-msg" name="message" rows="4"></textarea></div>
+	<div class="hpro-field"><label for="cf-address">Street Address</label><input id="cf-address" name="address" type="text" data-quote-field="address" autocomplete="street-address" placeholder="123 Main St"></div>
+	<div class="hpro-row2">
+		<div class="hpro-field"><label for="cf-city">City <span aria-hidden="true">*</span></label><input id="cf-city" name="city" type="text" data-quote-field="city" autocomplete="address-level2" placeholder="Your Ontario city" required></div>
+		<div class="hpro-field"><label for="cf-postal">Postal Code <span aria-hidden="true">*</span></label><input id="cf-postal" name="postal" type="text" data-quote-field="postal" autocomplete="postal-code" placeholder="N1A 1A1" required></div>
+	</div>
+	<div class="hpro-field"><label for="cf-service">Work to discuss</label><select id="cf-service" name="service" data-quote-field="service"><option value="">Choose the work</option><option value="furnace-repair">Furnace repair</option><option value="furnace-replacement">Furnace replacement</option><option value="heat-pump-installation">Heat pump installation</option><option value="hybrid-system">Furnace and heat pump system</option><option value="not-sure">Not sure yet</option></select></div>
+	<div class="hpro-field"><label for="cf-msg">Briefly describe your issue <span aria-hidden="true">*</span></label><textarea id="cf-msg" name="message" data-quote-field="message" rows="4" placeholder="e.g. My furnace won’t turn on…" required></textarea></div>
 	<div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
 	<label class="hpro-consent"><input type="checkbox" name="consent" required> <span>I agree to be contacted about my request.</span></label>
 	<p class="err" id="hpro-contact-error" role="alert" tabindex="-1" hidden></p>
 	<p>Your enquiry goes to the service team for review. An appointment requires confirmation.</p>
-	<button class="hpro-btn" type="submit" disabled>Send message</button>
+	<button class="hpro-btn" type="submit" disabled>Request My Free Quote</button>
 	<noscript><p>Enable JavaScript to send this form, or email <a href="mailto:contact@ontariofurnacerebates.ca">contact@ontariofurnacerebates.ca</a>.</p></noscript>
 </form><h2>An inquiry is not an application</h2><p>A response can help you organize questions for a provider. Program administrators approve funding, while you agree on equipment, scope and price with the contractor.</p></div></section>
 	</div>
@@ -87,8 +94,8 @@
 })();
 </script>
 <script src="/assets/js/hpro-config.js"></script>
-<script src="/assets/js/calculator.js?v=20261014-neutral-service" defer></script>
+<script src="/assets/js/calculator.js?v=20261015-form-restoration" defer></script>
 <script src="https://hvac-agent.headbangermarketing.com/assets/chat-widget.js?v=20261013-1" data-api="https://hvac-agent.headbangermarketing.com" data-privacy="/privacy-policy/" defer></script>
-<script src="/assets/js/contact-form.js?v=20261014-form-cleanup" defer></script>
+<script src="/assets/js/contact-form.js?v=20261015-form-restoration" defer></script>
 </body>
 </html>
